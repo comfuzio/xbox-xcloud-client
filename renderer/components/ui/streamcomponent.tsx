@@ -1,5 +1,6 @@
 import React from 'react'
 import Button from './button'
+import Slider from './slider'
 import xPlayer from 'xbox-xcloud-player'
 import Loader from './loader'
 import Card from './card'
@@ -7,9 +8,9 @@ import uPlot from 'uplot'
 import Ipc from '../../lib/ipc'
 
 interface StreamComponentProps {
-  onDisconnect?: () => void;
-  onMenu?: () => void;
-  xPlayer: xPlayer;
+    onDisconnect?: () => void;
+    onMenu?: () => void;
+    xPlayer: xPlayer;
 }
 
 function StreamComponent({
@@ -29,6 +30,30 @@ function StreamComponent({
 
     const [micStatus, setMicStatus] = React.useState(false)
     const [waitingSeconds, setWaitingSeconds] = React.useState(0) // eslint-disable-line @typescript-eslint/no-unused-vars
+
+
+
+    //Client-side volume control 
+    const [volume, setVolume] = React.useState(1.0) //without any controls, the volume has been maxed by default, let's follow this assumption and start at full for our slider
+    let audioElement = document.getElementsByTagName('audio')[0]
+    const handleVolumeChange = (newVolume: number) => {
+
+        //not sure if it is possible for us to be running this script without an audio element present hence lazy error checking here
+        if (audioElement == null)
+            audioElement = document.getElementsByTagName('audio')[0]
+
+        if (audioElement) {
+            setVolume(newVolume)
+            audioElement.volume = newVolume
+        } else {
+            console.error('VolumeSlider: handleChange: failed to find current or lost previous audioelement')
+        }
+
+    }
+    const volumeIcon = ( //from https://www.svgrepo.com/svg/502904/volume-low and optimized w/ https://jakearchibald.github.io/svgomg/
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 14v-4a1 1 0 0 1 1-1h2.65a1 1 0 0 0 .624-.22l3.101-2.48A1 1 0 0 1 16 7.08v9.84a1 1 0 0 1-1.625.78l-3.101-2.48a1 1 0 0 0-.625-.22H8a1 1 0 0 1-1-1Z" /></svg>
+    )
+
 
     let jitterData = [new Float32Array([performance_now_seconds()]), new Float32Array([0.0])]
     let droppedData = [new Float32Array([performance_now_seconds()]), new Float32Array([0.0]), new Float32Array([0.0])]
@@ -93,7 +118,7 @@ function StreamComponent({
                 {
                     size: 50,
                     stroke: 'red',
-                    values: (u, vals) => vals.map(v => (+v*1000.0).toFixed(1)),
+                    values: (u, vals) => vals.map(v => (+v * 1000.0).toFixed(1)),
                 },
             ],
         }, jitterData, document.getElementById('component_streamcomponent_debug_webrtc_jitter'))
@@ -136,45 +161,45 @@ function StreamComponent({
                     size: 50,
                     stroke: 'green',
                     values: (u, vals) => vals.map(v => +v.toFixed(0)),
-                    grid: {show: false},
+                    grid: { show: false },
                 },
                 {
                     side: 1,
                     stroke: 'blue',
                     values: (u, vals) => vals.map(v => +v.toFixed(0)),
-                    grid: {show: false},
+                    grid: { show: false },
                 },
             ],
         }, droppedData, document.getElementById('component_streamcomponent_debug_webrtc_dropped'))
 
         webRtcStatsInterval = setInterval(() => {
-            if(xPlayer._webrtcClient !== undefined){
+            if (xPlayer._webrtcClient !== undefined) {
                 xPlayer._webrtcClient.getStats().then((stats) => {
                     let statsOutput = ''
 
                     stats.forEach((report) => {
                         if (report.type === 'inbound-rtp' && report.kind === 'video') {
 
-                            if(jitterData[0].length > 1200){
-                                jitterData = sliceData(jitterData, jitterData[0].length-1200, jitterData[0].length)
+                            if (jitterData[0].length > 1200) {
+                                jitterData = sliceData(jitterData, jitterData[0].length - 1200, jitterData[0].length)
                             }
-                            if(droppedData[0].length > 1200){
-                                droppedData = sliceData(droppedData, droppedData[0].length-1200, droppedData[0].length)
+                            if (droppedData[0].length > 1200) {
+                                droppedData = sliceData(droppedData, droppedData[0].length - 1200, droppedData[0].length)
                             }
 
                             jitterData[0] = new Float32Array([...Array.from(jitterData[0]), performance_now_seconds()])
                             jitterData[1] = new Float32Array([...Array.from(jitterData[1]), report['jitter']])
 
                             droppedData[0] = new Float32Array([...Array.from(droppedData[0]), performance_now_seconds()])
-                            droppedData[1] = new Float32Array([...Array.from(droppedData[1]), report['packetsLost']-packetsDroppedBaseline])
-                            droppedData[2] = new Float32Array([...Array.from(droppedData[2]), report['framesDropped']-framesDroppedBaseline])
+                            droppedData[1] = new Float32Array([...Array.from(droppedData[1]), report['packetsLost'] - packetsDroppedBaseline])
+                            droppedData[2] = new Float32Array([...Array.from(droppedData[2]), report['framesDropped'] - framesDroppedBaseline])
                             packetsDroppedBaseline = report['packetsLost']
                             framesDroppedBaseline = report['framesDropped']
 
                             jitterUplot.setData(jitterData)
                             droppedUplot.setData(droppedData)
 
-                            if(frameCountDomUpdate >= 15){
+                            if (frameCountDomUpdate >= 15) {
                                 Object.keys(report).forEach((statName) => {
                                     statsOutput += `<strong>${statName}:</strong> ${report[statName]}<br>\n`
                                 })
@@ -200,17 +225,17 @@ function StreamComponent({
 
         const mouseInterval = setInterval(() => {
             const gamebarElement = document.getElementById('component_streamcomponent_gamebar')
-            if(gamebarElement === null){
+            if (gamebarElement === null) {
                 return
             }
 
-            if((Date.now()-lastMovement) >= 2000){
-                if(! gamebarElement.className.includes('hidden')){
+            if ((Date.now() - lastMovement) >= 2000) {
+                if (!gamebarElement.className.includes('hidden')) {
                     gamebarElement.className = 'hidden'
                 }
 
             } else {
-                if(gamebarElement.className.includes('hidden')){
+                if (gamebarElement.className.includes('hidden')) {
                     gamebarElement.className = ''
                 }
             }
@@ -218,7 +243,7 @@ function StreamComponent({
 
         // Keyboard events
         const keyboardPressEvent = (e) => {
-            switch(e.keyCode){
+            switch (e.keyCode) {
                 case 126:
                     toggleDebug()
                     break
@@ -235,8 +260,8 @@ function StreamComponent({
 
             // ipcRenderer.removeAllListeners('xcloud');
 
-            if(webRtcStatsInterval){
-                clearInterval(webRtcStatsInterval) 
+            if (webRtcStatsInterval) {
+                clearInterval(webRtcStatsInterval)
             }
             (document.getElementById('component_streamcomponent_debug_webrtc_jitter') !== null) ? document.getElementById('component_streamcomponent_debug_webrtc_jitter').innerHTML = '' : false;
             (document.getElementById('component_streamcomponent_debug_webrtc_dropped') !== null) ? document.getElementById('component_streamcomponent_debug_webrtc_dropped').innerHTML = '' : false
@@ -245,8 +270,8 @@ function StreamComponent({
 
 
 
-    function toggleMic(){
-        if(xPlayer.getChannelProcessor('chat').isPaused === true){
+    function toggleMic() {
+        if (xPlayer.getChannelProcessor('chat').isPaused === true) {
             xPlayer.getChannelProcessor('chat').startMic()
             setMicStatus(true)
         } else {
@@ -255,38 +280,38 @@ function StreamComponent({
         }
     }
 
-    function streamDisconnect(){
+    function streamDisconnect() {
         document.getElementById('streamComponentHolder').innerHTML = ''
 
         xPlayer.close()
     }
 
-    function endStream(){
-        if(confirm('Are you sure you want to end your stream?')){
+    function endStream() {
+        if (confirm('Are you sure you want to end your stream?')) {
             document.getElementById('streamComponentHolder').innerHTML = ''
             onDisconnect()
             xPlayer.close()
         }
     }
 
-    function toggleDebug(){
-        if(debugElement === null){
+    function toggleDebug() {
+        if (debugElement === null) {
             debugElement = document.getElementById('component_streamcomponent_debug')
         }
 
-        if(debugElement.className.includes('hidden')){
+        if (debugElement.className.includes('hidden')) {
             debugElement.className = ''
         } else {
             debugElement.className = 'hidden'
         }
     }
 
-    function drawWaitingTimes(seconds){
-        if(seconds !== false){
+    function drawWaitingTimes(seconds) {
+        if (seconds !== false) {
             setWaitingSeconds(seconds)
 
             const formattedWaitingTime = formatWaitingTime(seconds)
-            const html = '<div>Estimated waiting time in queue: <span id="component_streamcomponent_waitingtimes_seconds">'+formattedWaitingTime+'</span></div>'
+            const html = '<div>Estimated waiting time in queue: <span id="component_streamcomponent_waitingtimes_seconds">' + formattedWaitingTime + '</span></div>'
 
             document.getElementById('component_streamcomponent_waitingtimes').innerHTML = html
 
@@ -294,13 +319,13 @@ function StreamComponent({
                 seconds--
                 setWaitingSeconds(seconds)
 
-                if(document.getElementById('component_streamcomponent_waitingtimes') !== null){
+                if (document.getElementById('component_streamcomponent_waitingtimes') !== null) {
                     document.getElementById('component_streamcomponent_waitingtimes_seconds').innerText = formatWaitingTime(seconds)
                 } else {
                     clearInterval(secondsInterval)
                 }
 
-                if(seconds === 0){
+                if (seconds === 0) {
                     clearInterval(secondsInterval)
                 }
             }, 1000)
@@ -353,34 +378,45 @@ function StreamComponent({
                         <div style={{
                             width: '25%',
                         }}>
-                            <Button label={<span><i className="fa-solid fa-xmark"></i> End Stream</span>} title="End Stream" className='btn-cancel' onClick={ () => {
-                                endStream() 
-                            } }></Button> &nbsp;
-                            <Button label={<span><i className="fa-solid fa-xmark"></i></span>} title="Disconnect" className='btn' onClick={ () => {
-                                streamDisconnect() 
-                            } }></Button>
+                            <Button label={<span><i className="fa-solid fa-xmark"></i> End Stream</span>} title="End Stream" className='btn-cancel' onClick={() => {
+                                endStream()
+                            }}></Button> &nbsp;
+                            <Button label={<span><i className="fa-solid fa-xmark"></i></span>} title="Disconnect" className='btn' onClick={() => {
+                                streamDisconnect()
+                            }}></Button>
                         </div>
 
                         <div style={{
                             marginLeft: 'auto',
                             marginRight: 'auto',
                         }}>
-                            <Button label={ <span><i className="fa-brands fa-xbox"></i> Menu</span> } title="Open Xbox menu" onClick={ (e) => {
-                                e.target.blur(); onMenu() 
+                            <Button label={<span><i className="fa-brands fa-xbox"></i> Menu</span>} title="Open Xbox menu" onClick={(e) => {
+                                e.target.blur(); onMenu()
                             }}></Button> &nbsp;
-                            <Button label={ (micStatus === false) ? <span><i className="fa-solid fa-microphone-slash"></i> Muted</span> : <span><i className="fa-solid fa-microphone"></i> Active</span> } title={ (micStatus === false) ? 'Enable mic' : 'Disable mic' } className={ (micStatus === false) ? 'btn-cancel' : 'btn-primary' } onClick={ (e) => {
-                                e.target.blur(); toggleMic() 
+                            <Button label={(micStatus === false) ? <span><i className="fa-solid fa-microphone-slash"></i> Muted</span> : <span><i className="fa-solid fa-microphone"></i> Active</span>} title={(micStatus === false) ? 'Enable mic' : 'Disable mic'} className={(micStatus === false) ? 'btn-cancel' : 'btn-primary'} onClick={(e) => {
+                                e.target.blur(); toggleMic()
                             }}></Button>
                         </div>
+
+                        <Slider
+                            id="volume-slider"
+                            min={0}
+                            max={1}
+                            step={0.01}
+                            value={volume}
+                            onChange={handleVolumeChange}
+                            label="Volume"
+                            svg={volumeIcon}
+                        />
 
                         <div style={{
                             marginRight: 20,
                             width: '25%',
                             textAlign: 'right',
                         }}>
-                            <Button label={ <i className="fa-solid fa-bug"></i> } title="Debug" onClick={ (e) => {
-                                e.target.blur(); toggleDebug() 
-                            } }></Button>
+                            <Button label={<i className="fa-solid fa-bug"></i>} title="Debug" onClick={(e) => {
+                                e.target.blur(); toggleDebug()
+                            }}></Button>
                         </div>
                     </div>
                 </div>

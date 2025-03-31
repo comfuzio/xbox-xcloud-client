@@ -47,7 +47,7 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ runner.arch }}-npm-
 
       - name: Reset node_modules cache (if enabled)
-        if: env.reset_cache == true
+        if: env.reset_cache == 'true'
         run: rm -rf node_modules/
 
       - name: Install yarn dependencies

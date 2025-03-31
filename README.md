@@ -1,6 +1,10 @@
 # Greenlight
 
 [![Build/release](https://github.com/unknownskl/greenlight/actions/workflows/build.yml/badge.svg)](https://github.com/unknownskl/greenlight/actions/workflows/build.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=unknownskl_greenlight&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=unknownskl_greenlight)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=unknownskl_greenlight&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=unknownskl_greenlight)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=unknownskl_greenlight&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=unknownskl_greenlight)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=unknownskl_greenlight&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=unknownskl_greenlight)
 
 Greenlight is an open-source client for xCloud and Xbox home streaming made in Javascript and Typescript. The client is an application wrapper around [xbox-xcloud-player](https://github.com/unknownskl/xbox-xcloud-player).
 The application runs on Linux, macOS, Windows and Steam Deck.

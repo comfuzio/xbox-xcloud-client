@@ -197,7 +197,7 @@ function SettingsInput() {
                                 #{ index+1 } &nbsp;
 
                                         { (item) ?
-                                            item.id + ' axes: ' + item.axes.length + ', buttons: ' + item.buttons.length + ', rumble: ' + ((item.vibrationActuator !== null) ? item.vibrationActuator.type : 'Not supported')
+                                            item.id + ' axes: ' + item.axes.length + ', buttons: ' + item.buttons.length + ', rumble: ' + ((item.vibrationActuator !== null) ? (item.vibrationActuator as any).type : 'Not supported')
                                             : 'No controller detected'
                                         }
                                     </p>

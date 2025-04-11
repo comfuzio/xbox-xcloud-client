@@ -52,10 +52,10 @@ export default class Authentication {
         this._application.log('authenticationV2', '[startSilentFlow()] Starting silent flow...')
         this._isAuthenticating = true
 
-        this._xal.refreshTokens(this._tokenStore).then(() => {
+        this._xal.refreshTokens().then(() => {
             this._application.log('authenticationV2', '[startSilentFlow()] Tokens have been refreshed')
 
-            this.getStreamingToken(this._tokenStore).then((streamingTokens) => {
+            this.getStreamingToken().then((streamingTokens) => {
                 if(streamingTokens.xCloudToken !== null){
                     this._application.log('authenticationV2', '[startSilentFlow()] Retrieved both xHome and xCloud tokens')
                     this._appLevel = 2
@@ -64,7 +64,7 @@ export default class Authentication {
                     this._appLevel = 1
                 }
 
-                this._xal.getWebToken(this._tokenStore).then((webToken) => {
+                this._xal.getWebToken().then((webToken) => {
                     this._application.log('authenticationV2', __filename+'[startSilentFlow()] Web token received')
                     
                     this._application.authenticationCompleted(streamingTokens, webToken)
@@ -99,7 +99,7 @@ export default class Authentication {
 
             this._authCallback = (redirectUri) => {
                 this._application.log('authenticationV2', '[startAuthFlow()] Got redirect URI:', redirectUri)
-                this._xal.authenticateUser(this._tokenStore, redirect, redirectUri).then((result) => {
+                this._xal.authenticateUser(redirect, redirectUri).then((result) => {
                     this._application.log('authenticationV2', '[startAuthFlow()] Authenticated user:', result)
 
                     this.startSilentFlow()
@@ -159,8 +159,8 @@ export default class Authentication {
         })
     }
 
-    async getStreamingToken(tokenStore:TokenStore){
-        const sisuToken = tokenStore.getSisuToken()
+    async getStreamingToken(){
+        const sisuToken = this._tokenStore.getSisuToken()
         if(sisuToken === undefined)
             throw new Error('Sisu token is missing. Please authenticate first')
 

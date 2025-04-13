@@ -20,3 +20,13 @@ updates:
     target-branch: "main-v2"
     labels:
       - "yarn dependencies"
+    groups:
+      react:
+        patterns:
+          - "react$"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      fumadocs:
+        patterns:
+          - "fumadocs-*"

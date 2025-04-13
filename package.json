@@ -3,6 +3,7 @@
   "name": "greenlight",
   "description": "Greenlight is a streaming application for Xbox and xCloud",
   "author": "UnknownSKL <info+github@jimkroon.nl>",
+  "version": "2.3.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/unknownskl/greenlight.git"

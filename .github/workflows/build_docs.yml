@@ -24,6 +24,10 @@ on:
         default: false
         type: boolean
 
+env:
+  node_version: 22
+  reset_cache: ${{ inputs.reset_cache || false }}
+
 permissions:
   id-token: write
   pages: write
@@ -48,19 +52,23 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4.3.0
         with:
-          node-version: 22
+          node-version: ${{ env.node_version }}
+
+      - name: Reset node_modules cache (if enabled)
+        if: env.reset_cache == 'true'
+        run: rm -rf node_modules/
 
       - name: Install yarn dependencies
         run: yarn
   
-      - name: Lint code
+      - name: Build docs
         run: yarn docs build
 
       - name: Upload static files as artifact
         id: deployment-pages
         uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
         with:
-          path: packages/docs/docs/out/
+          path: packages/docs/out/
 
   # Deployment job
   deploy:

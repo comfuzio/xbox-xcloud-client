@@ -10,6 +10,7 @@
   "scripts": {
     "desktop": "yarn workspace greenlight-dektop",
     "web": "yarn workspace @greenlight/web",
+    "docs": "yarn workspace @greenlight/docs",
 
     "cli": "yarn workspace @greenlight/cli",
     "server": "yarn workspace @greenlight/server",

@@ -97,11 +97,11 @@ Install dependencies:
 
 Run development build:
 
-    yarn dev
+    yarn desktop dev
 
 Create production build:
 
-    yarn build
+    yarn desktop build
 
 ## Changelog
 

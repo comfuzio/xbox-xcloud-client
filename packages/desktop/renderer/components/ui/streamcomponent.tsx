@@ -29,7 +29,7 @@ function StreamComponent({
     let webRtcStatsInterval
 
     const [micStatus, setMicStatus] = React.useState(false)
-    const [waitingSeconds, setWaitingSeconds] = React.useState(0) // eslint-disable-line @typescript-eslint/no-unused-vars
+    const [waitingSeconds, setWaitingSeconds] = React.useState(0)  
 
 
 

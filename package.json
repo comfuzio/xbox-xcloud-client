@@ -9,6 +9,8 @@
   },
   "scripts": {
     "desktop": "yarn workspace @greenlight/desktop",
+    "web": "yarn workspace @greenlight/web",
+
     "cli": "yarn workspace @greenlight/cli",
     "server": "yarn workspace @greenlight/server",
     "logger": "yarn workspace @greenlight/logger",

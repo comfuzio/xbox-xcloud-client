@@ -12,7 +12,7 @@ function StreamPreload({
     onDisconnect,
     waitingTime = 0,
 }: StreamPreloadProps) {
-    const [waitingSeconds, setWaitingSeconds] = React.useState(-1) // eslint-disable-line @typescript-eslint/no-unused-vars
+    const [waitingSeconds, setWaitingSeconds] = React.useState(-1)  
     // console.log('outeffect', waitingTime, waitingSeconds)
 
     if(waitingSeconds < 0 && waitingTime > 0){

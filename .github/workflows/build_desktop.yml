@@ -7,9 +7,13 @@ on:
       - feature/*
     tags:
       - v*
+    paths:
+      - 'packages/desktop/**'
   pull_request:
     branches:
       - main-v2
+    paths:
+      - 'packages/desktop/**'
   workflow_dispatch:
     inputs:
       reset_cache:

@@ -9,11 +9,13 @@ on:
       - v*
     paths:
       - 'packages/web/**'
+      - '.github/workflows/build_web.yml'
   pull_request:
     branches:
       - main-v2
     paths:
       - 'packages/web/**'
+      - '.github/workflows/build_web.yml'
   workflow_dispatch:
     inputs:
       reset_cache:

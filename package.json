@@ -11,10 +11,10 @@
     "desktop": "yarn workspace greenlight-dektop",
     "web": "yarn workspace @greenlight/web",
     "docs": "yarn workspace @greenlight/docs",
+    "logger": "yarn workspace @greenlight/logger",
 
     "cli": "yarn workspace @greenlight/cli",
     "server": "yarn workspace @greenlight/server",
-    "logger": "yarn workspace @greenlight/logger",
     "authentication": "yarn workspace @greenlight/authentication",
     "storeapi": "yarn workspace @greenlight/storeapi",
     "xcloudapi": "yarn workspace @greenlight/xcloudapi",

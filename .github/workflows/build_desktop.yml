@@ -39,7 +39,7 @@ jobs:
           submodules: recursive
 
       - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v4.3.0
+        uses: actions/setup-node@v4.4.0
         with:
           node-version: ${{ env.node_version }}
       
@@ -73,7 +73,7 @@ jobs:
           submodules: recursive
 
       - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v4.3.0
+        uses: actions/setup-node@v4.4.0
         with:
           node-version: ${{ env.node_version }}
       
@@ -149,7 +149,7 @@ jobs:
           path: packages/desktop/flatpak/
 
       - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v4.3.0
+        uses: actions/setup-node@v4.4.0
         with:
           node-version: ${{ env.node_version }}
 
@@ -193,7 +193,7 @@ jobs:
           submodules: recursive
 
       - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v4.3.0
+        uses: actions/setup-node@v4.4.0
         with:
           node-version: ${{ env.node_version }}
 

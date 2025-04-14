@@ -15,9 +15,9 @@
     "incremental": true,
     "outDir": "./dist",
     "paths": {
-      "@/*": ["./src/*", "./tests/*"],
+      "@/*": ["./src/*"],
     }
   },
-  "include": ["next-env.d.ts", "src/**/*.ts", "tests/**/*.ts"],
+  "include": ["next-env.d.ts", "src/**/*.ts"],
   "exclude": ["node_modules"]
 }

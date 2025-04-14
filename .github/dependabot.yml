@@ -8,7 +8,8 @@ updates:
       interval: "weekly"
     target-branch: "main-v2"
     labels:
-      - "github-actions dependencies"
+      - "github-actions"
+      - "dependencies"
 
   # Maintain dependencies for npm
   - package-ecosystem: "npm"
@@ -19,7 +20,9 @@ updates:
       interval: "weekly"
     target-branch: "main-v2"
     labels:
-      - "yarn dependencies"
+      - "yarn"
+      - "dependencies"
+    versioning-strategy: increase
     groups:
       react:
         patterns:

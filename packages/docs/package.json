@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "node api-build.mjs && next build",
-    "dev": "node api-build.mjs && next dev",
+    "build": "next build",
+    "dev": "next dev",
     "start": "next start",
-    "postinstall": "fumadocs-mdx"
+    "postinstall2": "fumadocs-mdx"
   },
   "dependencies": {
     "fumadocs-core": "^15.2.5",

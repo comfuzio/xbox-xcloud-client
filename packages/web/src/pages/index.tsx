@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import Head from "next/head";
 import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -19,6 +21,15 @@ const geistMono = Geist_Mono({
 });
 
 export default function Home() {
+  const [isElectron, setIsElectron] = useState(false);
+
+
+  useEffect(() => {
+    // Check if `window.isElectron` is defined
+    if(typeof greenlight !== "undefined") {
+      setIsElectron(true);
+    }
+  }, []);
 
   return (
     <>
@@ -45,6 +56,7 @@ export default function Home() {
               Get started by editing <code>src/pages/index.tsx</code>.
             </li>
             <li>Save and see your changes instantly.</li>
+            <li>Are we running in electron? {isElectron === true ? 'Yes!' : 'No!'}</li>
           </ol>
 
           <div className={styles.ctas}>

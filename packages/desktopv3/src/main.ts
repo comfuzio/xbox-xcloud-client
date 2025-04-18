@@ -8,7 +8,13 @@ const createWindow = () => {
     const win = new BrowserWindow({
       width: 800,
       height: 600,
-      backgroundColor: '#1a1b1e'
+      backgroundColor: '#1a1b1e',
+      webPreferences: {
+        preload: path.join(__dirname, 'preload.js'),
+        contextIsolation: true,
+        webSecurity: true,
+        allowRunningInsecureContent: false,
+      },
     })
   
     win.loadURL('file://web/index.html');

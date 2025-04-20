@@ -94,7 +94,7 @@ jobs:
         run: yarn
 
       - name: Build dependencies
-        run: yarn build:deps
+        run: yarn web build:deps
 
       - name: Lint code
         run: yarn web build

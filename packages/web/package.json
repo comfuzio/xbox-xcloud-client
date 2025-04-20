@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "DEBUG_GREENLIGHT=* next dev",
     "build": "next build",
-    "build:electron": "BUILD_ELECTRON=true next build",
+    "build:deps": "cd ../../ && yarn logger build && yarn platform build",
     "start": "next start",
     "lint": "next lint"
   },

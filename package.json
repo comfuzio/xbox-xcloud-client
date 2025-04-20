@@ -16,7 +16,6 @@
     "platform": "yarn workspace @greenlight/platform",
     "server": "yarn workspace @greenlight/server",
 
-    "build:deps": "yarn workspace @greenlight/logger build",
     "test": "yarn logger test"
   },
   "workspaces": [

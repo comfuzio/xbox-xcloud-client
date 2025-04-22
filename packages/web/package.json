@@ -10,6 +10,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroui/react": "^2.7.6",
+    "framer-motion": "^12.7.4",
     "next": "15.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
@@ -18,6 +20,10 @@
     "@eslint/eslintrc": "^3",
     "@greenlight/logger": "^0.1.0",
     "@greenlight/platform": "^0.1.0",
+    "@heroui/button": "^2.2.17",
+    "@heroui/navbar": "^2.2.15",
+    "@heroui/progress": "^2.2.13",
+    "@tailwindcss/postcss": "^4.1.4",
     "@tanstack/react-query": "^5.74.4",
     "@trpc/client": "^11.1.0",
     "@trpc/react-query": "^11.1.0",
@@ -27,6 +33,8 @@
     "@types/react-dom": "^18",
     "eslint": "^9",
     "eslint-config-next": "15.3.0",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.4",
     "typescript": "^5"
   }
 }

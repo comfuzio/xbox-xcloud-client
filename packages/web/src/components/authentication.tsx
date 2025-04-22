@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, Fragment } from 'react'
+import { Button, ButtonGroup, CircularProgress } from '@heroui/react'
 
 import Head from 'next/head'
 // import styles from '@/styles/Home.module.css'
@@ -68,7 +69,9 @@ export default function Authentication({ children }:AuthenticationProps) {
           // We are signed in, but we dont have tokens yet..
           (loadingStreamingTokens || loadingWebTokens) ?
             <div>
-              <center>Loading tokens...</center>
+              <center>
+                <CircularProgress label="Loading..." />
+              </center>
             </div> :
           // We are signed in, and we have the session tokens in the sessionStorage so lets show the UI
             <div>{ children }</div> :
@@ -76,8 +79,10 @@ export default function Authentication({ children }:AuthenticationProps) {
           authMethod === "msal" ? 
             <MsalAuthentication /> :
             <Fragment>
-              <button tabIndex={0} key='1'data-nav data-nav-group="default" onClick={() => { setAuthMethod('xal') }}>Start XAL</button>
-              <button tabIndex={0} key='2' data-nav data-nav-group="default" onClick={() => { setAuthMethod('msal') }}>Start MSAL</button>
+              <center>
+                <Button tabIndex={0} key='1'data-nav data-nav-group="default" color="primary" onPress={() => { setAuthMethod('xal') }}>Start XAL</Button>
+                <Button tabIndex={0} key='2' data-nav data-nav-group="default" color="primary" onPress={() => { setAuthMethod('msal') }}>Start MSAL</Button>
+              </center>
             </Fragment>
       }
     </>

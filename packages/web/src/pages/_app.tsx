@@ -1,5 +1,8 @@
 'use client';
 
+import { HeroUIProvider } from '@heroui/react'
+import React from 'react'
+
 import "../styles/globals.css";
 
 import { createTRPCReact } from '@trpc/react-query';
@@ -11,6 +14,7 @@ import AppRouter from '@greenlight/platform/dist/trpc.js'
 import { GamepadNavigationProvider } from '../context/gamepadnav'
 
 import Authentication from "../components/authentication";
+import Header from "../components/header";
 
 // Export trpcReact for usage in components
 export const trpcReact = createTRPCReact<typeof AppRouter>();
@@ -41,11 +45,25 @@ export default function App({ Component, pageProps }: AppProps) {
     return `${wsProtocol}://${wsHost}:${wsPort}`;
   }
 
-  return <trpcReact.Provider client={trpcClient} queryClient={queryClient}>
-    <GamepadNavigationProvider>
-      <Authentication>
-        <Component {...pageProps} />
-      </Authentication>
-    </GamepadNavigationProvider>
-    </trpcReact.Provider>;
+  return <React.StrictMode>
+    <trpcReact.Provider client={trpcClient} queryClient={queryClient}>
+      <GamepadNavigationProvider>
+        <HeroUIProvider>
+          <main className="greenlight dark text-foreground bg-background">
+            <Authentication>
+
+              <div id="_app">
+                <div id="header">
+                  <Header />
+                </div>
+                <Component {...pageProps} />
+              </div>
+
+
+            </Authentication>
+          </main>
+        </HeroUIProvider>
+      </GamepadNavigationProvider>
+    </trpcReact.Provider>
+  </React.StrictMode>;
 }

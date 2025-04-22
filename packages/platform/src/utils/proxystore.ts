@@ -1,6 +1,15 @@
 import { TokenStore } from 'xal-node'
- 
+import UserToken from 'xal-node/dist/lib/tokens/usertoken.js'
+import { IUserToken } from 'xal-node/dist/lib/tokens/usertoken.js' 
 export default class ProxyStore extends TokenStore {
+
+    constructor(token?: IUserToken) {
+        super()
+
+        if(token !== undefined)
+            // console.log(UserToken.default)
+            this._userToken = new (UserToken as any).default(token)
+    }
  
     load() {
         // @TODO: Load data and pass JSON data as string into loadJson()

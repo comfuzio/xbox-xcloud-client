@@ -33,3 +33,18 @@ a {
     color-scheme: dark;
   }
 }
+
+button {
+  margin: 5px;
+  border-radius: 0.5rem;
+  border: 0px;
+  padding: 5px;
+}
+
+[data-nav]:focus {
+  /* outline: none; */
+  /* box-shadow: 0 0 0 3px #facc15; */
+  transition: box-shadow 0.2s;
+
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+}

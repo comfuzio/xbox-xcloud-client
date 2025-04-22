@@ -1,20 +1,34 @@
 import { Msal, TokenStore } from 'xal-node'
 import ProxyStore from '../utils/proxystore.js'
+import { IUserToken } from 'xal-node/dist/lib/tokens/usertoken.js'
 
 export default class authController {
-    _tokenStore = new ProxyStore();
 
     async startMsalAuth() {
-        const msal = new Msal(this._tokenStore)
-        // return await msal.doDeviceCodeAuth()
+        const tokenStore = new ProxyStore();
+        const msal = new Msal(tokenStore)
+        return await msal.doDeviceCodeAuth()
+    }
+
+    async verifyDeviceCode(devicecode:string, timeout?:number) {
+        const tokenStore = new ProxyStore();
+        const msal = new Msal(tokenStore)
+        return await msal.doPollForDeviceCodeAuth(devicecode, timeout)
+    }
+
+    async getStreamingTokens(json_token:string) {
+        const token = JSON.parse(json_token) as IUserToken
         
-        return {
-            user_code: '111',
-            device_code: '222',
-            verification_uri: '333',
-            expires_in: 900,
-            interval: 5,
-            message: 'Please go to the verification_uri and enter the user_code',
-        }
+        const tokenStore = new ProxyStore(token);
+        const msal = new Msal(tokenStore)
+        return await msal.getStreamingTokens()
+    }
+
+    async getWebToken(json_token:string) {
+        const token = JSON.parse(json_token) as IUserToken
+
+        const tokenStore = new ProxyStore(token);
+        const msal = new Msal(tokenStore)
+        return await msal.getWebToken()
     }
 }

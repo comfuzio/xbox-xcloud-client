@@ -1,36 +1,55 @@
+'use client';
+
 import { useEffect, useState } from 'react'
-
 import Head from 'next/head'
-// import styles from '@/styles/Home.module.css'
-
-import { getLocalStorage, setLocalStorage } from '../../utils/localstorage'
-import { query } from '../../utils/trpcquery'
+import { setLocalStorage } from '../../utils/localstorage'
+import { trpcReact } from '../../pages/_app';
 
 export default function MsalAuthentication() {
-  const [data2, isLoading, error] = query('auth_msal_start')
+    const msal_data = trpcReact.auth_msal_start.useQuery()
+    const [msalLogin, setMsalLogin] = useState(msal_data.data)
 
-  function getAuthenticationdetails() {
-    const auth_method = getLocalStorage('auth_method') ?? 'none'
-    const auth_token = getLocalStorage('auth_token') ?? ''
-
-    return [auth_method, auth_token]
-  }
-
-  const [auth_method, auth_token] = getAuthenticationdetails();
-  console.log('Auth method:', auth_method);
-  console.log('Auth token:', auth_token);
+    const { data: verifyData, isLoading: isVerifying } = trpcReact.auth_msal_verify.useQuery(
+        (msalLogin?.device_code as string),
+        {
+          enabled: !!msalLogin?.device_code,
+        }
+    );
 
   useEffect(() => {
-    
+    if(msal_data.data === undefined)
+        return;
 
-  }, [auth_method, auth_token]);
+    setMsalLogin(msal_data.data)
+  }, [msal_data.data]);
+
+  useEffect(() => {
+    if(msalLogin === undefined)
+        return;
+    
+  }, [msalLogin]);
+
+  useEffect(() => {
+    if(verifyData === undefined)
+        return;
+
+    setLocalStorage('auth_data_msal', JSON.stringify(verifyData));
+    setLocalStorage('auth_method', 'msal');
+
+    // Reload page
+    window.location.reload();
+
+  }, [verifyData]);
 
   return (
     <>
       <Head>
         <title>Authentication</title>
       </Head>
-      MSAL Auth
+        { msalLogin === undefined ?
+         <p>Requesting login url...</p> :
+        msalLogin?.message
+      }
     </>
   );
 }

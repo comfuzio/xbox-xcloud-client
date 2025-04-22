@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "DEBUG_GREENLIGHT=* next dev",
+    "dev": "NODE_OPTIONS='--inspect' DEBUG_GREENLIGHT=* next dev",
     "build": "next build",
     "build:deps": "cd ../../ && yarn logger build && yarn platform build",
     "start": "next start",

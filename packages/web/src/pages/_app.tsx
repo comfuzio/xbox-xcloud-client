@@ -1,23 +1,21 @@
+'use client';
+
 import "../styles/globals.css";
 
 import { createTRPCReact } from '@trpc/react-query';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import { createWSClient, wsLink } from '@trpc/client';
 import AppRouter from '@greenlight/platform/dist/trpc.js'
+import { GamepadNavigationProvider } from '../context/gamepadnav'
 
 import Authentication from "../components/authentication";
 
+// Export trpcReact for usage in components
 export const trpcReact = createTRPCReact<typeof AppRouter>();
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [wsConfig, setWsConfig] = useState({
-    port: 5050,
-    host: 'localhost',
-    protocol: 'ws',
-  });
-
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient, setTrpcClient] = useState(() =>
     trpcReact.createClient({
@@ -44,8 +42,10 @@ export default function App({ Component, pageProps }: AppProps) {
   }
 
   return <trpcReact.Provider client={trpcClient} queryClient={queryClient}>
-    <Authentication>
-      <Component {...pageProps} />
-    </Authentication>
+    <GamepadNavigationProvider>
+      <Authentication>
+        <Component {...pageProps} />
+      </Authentication>
+    </GamepadNavigationProvider>
     </trpcReact.Provider>;
 }

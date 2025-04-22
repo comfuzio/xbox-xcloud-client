@@ -1,5 +1,4 @@
-// import Logger from '../src/index'
-// import Sink from '../src/sink'
+// import Platform from '../src/index'
 // import { expect } from 'chai'
 
 // describe('Logger', () => {

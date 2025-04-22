@@ -13,7 +13,11 @@ export const appRouter = router({
   ping: publicProcedure.query(() => 'pong'),
   echo: publicProcedure.input(z.string()).query(({ input }) => `echo: ${input}`),
 
-  auth_msal_start: publicProcedure.query(async () => await auth.startMsalAuth())
+  auth_msal_start: publicProcedure.query(async () => await auth.startMsalAuth()),
+  auth_msal_verify: publicProcedure.input(z.string()).query(async ({ input }) => await auth.verifyDeviceCode(input)),
+  auth_get_streamingtokens: publicProcedure.input(z.string()).query(async ({ input }) => await auth.getStreamingTokens(input)),
+  auth_get_webtoken: publicProcedure.input(z.string()).query(async ({ input }) => await auth.getWebToken(input)),
+
 });
 
 export default appRouter;

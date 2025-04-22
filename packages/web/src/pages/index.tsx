@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from "react";
 
 import Head from "next/head";
@@ -24,16 +26,16 @@ const geistMono = Geist_Mono({
 
 export default function Home() {
 
-  const { data, isLoading, error } = trpcReact.auth_msal_start.useQuery()
+  // const { data, isLoading, error } = trpcReact.auth_msal_start.useQuery()
 
-  useEffect(() => {
-    if (error) {
-      console.error("Error fetching data:", error);
-    } else if (data) {
-      console.log("Data fetched successfully:", data);
-    }
+  // useEffect(() => {
+  //   if (error) {
+  //     console.error("Error fetching data:", error);
+  //   } else if (data) {
+  //     console.log("Data fetched successfully:", data);
+  //   }
 
-  }, [isLoading, error, data]);
+  // }, [isLoading, error, data]);
 
   return (
     <>

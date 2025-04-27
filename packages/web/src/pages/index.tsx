@@ -1,7 +1,7 @@
 import { title } from "@/components/primitives";
 import { Link } from "react-router-dom"
 import DefaultLayout from "@/layouts/default";
-import { Card, CardBody, CardFooter, CardHeader, Button, Spinner } from "@heroui/react";
+import { Card, CardFooter, CardHeader, Button, Spinner } from "@heroui/react";
 
 import { useTRPC } from "@/utils/trpc";
 import { useQuery } from "@tanstack/react-query";

@@ -1,4 +1,5 @@
-import { Link } from "@heroui/link";
+// import { Link } from "@heroui/link";
+import { Link } from "react-router-dom";
 import {
   Navbar as HeroUINavbar,
   NavbarBrand,
@@ -64,7 +65,7 @@ export const Navbar = () => {
           <Link
             className="flex justify-start items-center gap-1"
             color="foreground"
-            href="/"
+            to="/"
           >
             <p className="font-bold text-inherit">Greenlight</p>
           </Link>
@@ -78,7 +79,7 @@ export const Navbar = () => {
                   "data-[active=true]:text-primary data-[active=true]:font-medium"
                 )}
                 color="foreground"
-                href={item.href}
+                to={item.href}
               >
                 {item.label}
               </Link>
@@ -104,8 +105,8 @@ export const Navbar = () => {
           {siteConfig.navItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
               <Link
-                href={item.href}
-                size="lg"
+                to={item.href}
+                // size="lg"
               >
                 {item.label}
               </Link>

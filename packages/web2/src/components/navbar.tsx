@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link } from "@heroui/link";
 import {
   Navbar as HeroUINavbar,
@@ -13,12 +12,11 @@ import { link as linkStyles } from "@heroui/theme";
 import { CircularProgress, User } from "@heroui/react";
 import clsx from "clsx";
 
-import { trpcReact } from '../providers/trpc';
 import { siteConfig } from "@/config/site";
+import { useQuery } from '@tanstack/react-query';
+import { useTRPC } from '../utils/trpc';
 
 import { getWebToken } from "@/utils/tokenhelper";
-
-import { useGlobalTrpcState } from "@/providers/storage";
 
 function extractUserData(userResponse?: {
   value: string;
@@ -42,22 +40,21 @@ function extractUserData(userResponse?: {
 }
 
 export const Navbar = () => {
-  const [profileData, setProfileData] = useGlobalTrpcState('user_profile', undefined);
-  const { data: profileDataApi } = trpcReact.profile_get_current.useQuery({ token: getWebToken() }, { enabled: (profileData === undefined) });
-  useEffect(() => { setProfileData(extractUserData(profileDataApi?.data.profileUsers[0].settings)) }, [profileDataApi]);
+  const trpc = useTRPC()
+  const profileData = useQuery(trpc.profile_get_current.queryOptions({ token: getWebToken() }))
 
   const gamerTagElement = (
-    profileData?.Gamertag === undefined ?
+    profileData.isLoading ?
       <CircularProgress size="sm" aria-label="Loading gamertag..."></CircularProgress>
-    :
+    : 
       <User
       avatarProps={{
-        src: profileData?.GameDisplayPicRaw,
+        src: extractUserData(profileData.data?.data.profileUsers[0].settings)?.GameDisplayPicRaw,
         showFallback: false,
         disableAnimation: true,
       }}
-      description={profileData?.Gamerscore}
-      name={profileData?.Gamertag}></User>
+      description={extractUserData(profileData.data?.data.profileUsers[0].settings)?.Gamerscore}
+      name={extractUserData(profileData.data?.data.profileUsers[0].settings)?.Gamertag}></User>
   );
 
   return (

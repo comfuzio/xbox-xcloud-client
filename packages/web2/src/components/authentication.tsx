@@ -3,8 +3,10 @@ import { Button, CircularProgress, Card, CardBody } from '@heroui/react'
 
 import Head from 'next/head'
 
-import { getLocalStorage, getSessionStorage, setSessionStorage } from '../utils/localstorage'
-import { trpcReact } from '../providers/trpc';
+import { getLocalStorage, getSessionStorage, setSessionStorage, removeSessionStorage } from '../utils/localstorage'
+import { useTRPC } from '../utils/trpc';
+import { getWebToken } from '../utils/tokenhelper';
+import { useQuery } from '@tanstack/react-query';
 
 import MsalAuthentication from './authentication/msal'
 
@@ -22,28 +24,28 @@ interface AuthenticationProps {
 }
 
 export default function Authentication({ children }:AuthenticationProps) {
+  const trpc = useTRPC()
+
+
+
   const [authMethod, setAuthMethod] = useState('none')
   const [signedInMethod] = useState(getLocalStorage('auth_method') ?? 'none')
+  const [userToken] = useState(getLocalStorage('auth_data_msal') ?? '{}')
 
   // Check if we have local tokens
   const [webToken] = useState(getSessionStorage('auth_web_token') ?? undefined)
   const [xCloudToken] = useState(getSessionStorage('auth_xcloud_token') ?? undefined)
   const [xHomeToken] = useState(getSessionStorage('auth_xhome_token') ?? undefined)
-
-  console.log('Loaded tokens:')
-  console.log(webToken)
-  console.log(xCloudToken)
-  console.log(xHomeToken)
   
-  const [userToken] = useState(getLocalStorage('auth_data_msal') ?? '{}')
-  const { data: streamingTokens, isLoading: loadingStreamingTokens } = trpcReact.auth_get_streamingtokens.useQuery(
-    (userToken),
-    { enabled: (signedInMethod !== 'none' && webToken === undefined) }
-  );
-  const { data: webTokens, isLoading: loadingWebTokens } = trpcReact.auth_get_webtoken.useQuery(
-    (userToken),
-    { enabled: (signedInMethod !== 'none' && (xCloudToken === undefined || xHomeToken === undefined )) }
-  );
+  const authStreamingTokens = useQuery({
+    ...trpc.auth_get_streamingtokens.queryOptions(userToken as string),
+    enabled: (signedInMethod !== 'none' && (xCloudToken === undefined || xHomeToken === undefined )),
+  })
+
+  const authWebTokens = useQuery({
+    ...trpc.auth_get_webtoken.queryOptions(userToken as string),
+    enabled: (signedInMethod !== 'none' && webToken === undefined),
+  })
 
   // Workaround for server-side rendering issues
   const [isMounted, setIsMounted] = useState(false);
@@ -56,15 +58,29 @@ export default function Authentication({ children }:AuthenticationProps) {
     return null;
   }
 
-  if(signedInMethod !== 'none'){
+  if(authWebTokens.isSuccess && authWebTokens.data !== undefined){
+    setSessionStorage('auth_web_token', JSON.stringify(authWebTokens.data.data))
+    const date = new Date(authWebTokens.data.data.NotAfter)
+    setSessionStorage('auth_web_token_expires', date.toISOString())
+  }
+  if(authStreamingTokens.isSuccess && authStreamingTokens.data !== undefined){
+    setSessionStorage('auth_xcloud_token', JSON.stringify(authStreamingTokens.data.xCloudToken.data))
+    setSessionStorage('auth_xhome_token', JSON.stringify(authStreamingTokens.data.xHomeToken.data))
+  }
 
-    if(webTokens !== undefined){
-      setSessionStorage('auth_web_token', JSON.stringify(webTokens.data))
+  // Test if we can load the tokens if they are set.
+  if(webToken !== undefined && xCloudToken !== undefined && xHomeToken !== undefined) {
+    // Check for web token
+    const token = getWebToken()
+    if(token.token === undefined || token.uhs === undefined) {
+      // We dont have a valid token, so we need to sign in again
+      removeSessionStorage('auth_web_token')
+      removeSessionStorage('auth_xcloud_token')
+      removeSessionStorage('auth_xhome_token')
     }
-    if(streamingTokens !== undefined){
-      setSessionStorage('auth_xcloud_token', JSON.stringify(streamingTokens.xCloudToken.data))
-      setSessionStorage('auth_xhome_token', JSON.stringify(streamingTokens.xHomeToken.data))
-    }
+
+    // Check the streaming tokens
+    // @TODO: todo to implement
   }
 
   return (
@@ -75,14 +91,14 @@ export default function Authentication({ children }:AuthenticationProps) {
       {
         signedInMethod !== 'none' ? 
           // We are signed in, but we dont have tokens yet..
-          (loadingStreamingTokens || loadingWebTokens) ?
+          (authStreamingTokens.isLoading || authWebTokens.isLoading) ?
             <main className="container mx-auto max-w-screen px-6 flex-grow pt-16">
               <Card><CardBody>
                 <center>
                   <CircularProgress label="Authenticating..." />
                   <br />
-                  {(loadingWebTokens === true) ? <p className="text-center">Retrieving web token...</p> : ''}
-                  {(loadingStreamingTokens === true) ? <p className="text-center">Retrieving streaming tokens...</p> : ''}
+                  {(authWebTokens.isLoading === true) ? <p className="text-center">Retrieving web token...</p> : ''}
+                  {(authStreamingTokens.isLoading === true) ? <p className="text-center">Retrieving streaming tokens...</p> : ''}
                 </center>
               </CardBody></Card>
             </main> :

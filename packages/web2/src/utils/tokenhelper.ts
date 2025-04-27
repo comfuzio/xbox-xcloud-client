@@ -8,7 +8,7 @@ export function getWebToken() {
     
     if(webToken !== undefined) {
         const parsedToken = JSON.parse(webToken);
-        uhs = parsedToken.DisplayClaims.xui[0].uhs;
+        uhs = parsedToken.DisplayClaims?.xui[0]?.uhs;
         token = parsedToken.Token;
     }
 

@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+[data-nav]:focus {
+    outline: none;
+    /* transition: box-shadow 0.2s; */
+    border-radius: 4px;
+    
+    box-shadow:
+      0 0 0 3px black,    /* simulate the "gap" with page background color */
+      0 0 0 5px white;    /* white border outside */
+  }
+  

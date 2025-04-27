@@ -12,7 +12,7 @@ export default function DefaultLayout({
       <div className="relative flex flex-col h-screen">
         <Authentication>
           <Navbar />
-          <main className="container mx-auto max-w-screen px-6 flex-grow pt-16">
+          <main className="container mx-auto max-w-full px-6 flex-grow pt-4">
             {children}
           </main>
         </Authentication>

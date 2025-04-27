@@ -59,13 +59,14 @@ export const Navbar = () => {
   );
 
   return (
-    <HeroUINavbar maxWidth="xl" position="sticky">
+    <HeroUINavbar maxWidth="full" position="sticky" isBordered={true}>
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand className="gap-3 max-w-fit">
           <Link
             className="flex justify-start items-center gap-1"
             color="foreground"
             to="/"
+            data-nav data-nav-group="default"
           >
             <p className="font-bold text-inherit">Greenlight</p>
           </Link>
@@ -80,6 +81,7 @@ export const Navbar = () => {
                 )}
                 color="foreground"
                 to={item.href}
+                data-nav data-nav-group="default"
               >
                 {item.label}
               </Link>

@@ -1,4 +1,4 @@
-import {
+import React, {
   createContext,
   useContext,
   useEffect,
@@ -21,21 +21,48 @@ const GamepadNavigationContext = createContext<GamepadNavContextType>({
 export const GamepadNavigationProvider = ({ children }: { children: ReactNode }) => {
   const [activeGroup, setActiveGroupState] = useState('default');
   const prevButtons = useRef<boolean[]>([]);
-
-  // 🧠 Move focus in a direction
-  const moveFocus = (direction: Direction) => {
-    const current = document.activeElement as HTMLElement;
-    const isValidElement = current?.hasAttribute?.('data-nav');
   
-    // 🧠 If no valid focus, fallback to first in group
+  // Instead of saving element, save a 'selector-like' path
+  const lastFocusedPathByGroup = useRef<Map<string, string>>(new Map());
+
+  const getElementPath = (el: HTMLElement) => {
+    if (!el) return '';
+    const path = [];
+    let current: HTMLElement | null = el;
+
+    while (current && current !== document.body) {
+      const index = Array.from(current.parentNode?.children || []).indexOf(current);
+      path.unshift(index);
+      current = current.parentElement;
+    }
+
+    return path.join('-'); // example: "2-5-1" (body > div:nth-child(3) > ul:nth-child(6) > li:nth-child(2))
+  };
+
+  const getElementByPath = (path: string) => {
+    if (!path) return null;
+    const indexes = path.split('-').map((i) => parseInt(i, 10));
+    let current: Element | null = document.body;
+
+    for (const index of indexes) {
+      if (!current) return null;
+      current = current.children[index];
+    }
+
+    return current as HTMLElement;
+  };
+
+  const moveFocus = (direction: Direction) => {
+    let current = document.activeElement as HTMLElement;
+    const isValidElement = current?.hasAttribute?.('data-nav');
+
     if (!isValidElement) {
-      const first = document.querySelector<HTMLElement>(
-        `[data-nav][data-nav-group="${activeGroup}"]`
-      );
-      first?.focus();
+      const path = lastFocusedPathByGroup.current.get(activeGroup);
+      current = getElementByPath(path || '') || document.querySelector<HTMLElement>(`[data-nav][data-nav-group="${activeGroup}"]`)!;
+      if (current) current.focus();
       return;
     }
-  
+
     const currentRect = current.getBoundingClientRect();
     const elements = Array.from(
       document.querySelectorAll<HTMLElement>('[data-nav]')
@@ -44,46 +71,60 @@ export const GamepadNavigationProvider = ({ children }: { children: ReactNode })
         el.tabIndex >= 0 &&
         (el.getAttribute('data-nav-group') || 'default') === activeGroup
     );
-  
+
     let best: HTMLElement | null = null;
     let bestDistance = Infinity;
-  
+
     for (const el of elements) {
       if (el === current) continue;
       const rect = el.getBoundingClientRect();
-  
+
       const isValid = {
         up: rect.bottom <= currentRect.top,
         down: rect.top >= currentRect.bottom,
         left: rect.right <= currentRect.left,
         right: rect.left >= currentRect.right,
       }[direction];
-  
+
       if (!isValid) continue;
-  
+
       const dx = rect.left - currentRect.left;
       const dy = rect.top - currentRect.top;
       const distance = Math.sqrt(dx * dx + dy * dy);
-  
+
       if (distance < bestDistance) {
         best = el;
         bestDistance = distance;
       }
     }
-  
+
     if (best) {
       best.focus();
       best.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
     }
-  };  
+  };
 
-  // 🔘 Simulate enter/click
   const handleAction = () => {
     const current = document.activeElement as HTMLElement;
     current?.click?.();
   };
 
-  // 🎮 Gamepad polling
+  useEffect(() => {
+    const handleFocus = (e: FocusEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target?.hasAttribute('data-nav')) return;
+
+      const groupId = target.getAttribute('data-nav-group') || 'default';
+      const path = getElementPath(target);
+      if (path) {
+        lastFocusedPathByGroup.current.set(groupId, path);
+      }
+    };
+
+    window.addEventListener('focusin', handleFocus);
+    return () => window.removeEventListener('focusin', handleFocus);
+  }, []);
+
   useEffect(() => {
     const pollGamepad = () => {
       const gamepads = navigator.getGamepads();
@@ -97,8 +138,8 @@ export const GamepadNavigationProvider = ({ children }: { children: ReactNode })
       if (wasPressed(13)) moveFocus('down');
       if (wasPressed(14)) moveFocus('left');
       if (wasPressed(15)) moveFocus('right');
-      if (wasPressed(0)) handleAction(); // A
-      if (wasPressed(1)) setActiveGroup('default'); // B
+      if (wasPressed(0)) handleAction(); // A button
+      if (wasPressed(1)) setActiveGroup('default'); // B button
 
       prevButtons.current = buttons;
     };
@@ -107,7 +148,6 @@ export const GamepadNavigationProvider = ({ children }: { children: ReactNode })
     return () => clearInterval(interval);
   }, [activeGroup]);
 
-  // ⌨️ Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
@@ -140,19 +180,24 @@ export const GamepadNavigationProvider = ({ children }: { children: ReactNode })
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeGroup]);
 
-  // 🚀 Auto-focus first item in group
   const setActiveGroup = (groupId: string) => {
     setActiveGroupState(groupId);
 
     setTimeout(() => {
-      const first = document.querySelector<HTMLElement>(
-        `[data-nav][data-nav-group="${groupId}"]`
-      );
-      if (first) {
-        first.focus();
-        first.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      const path = lastFocusedPathByGroup.current.get(groupId);
+      let el: HTMLElement | null = getElementByPath(path || '');
+
+      if (!el) {
+        el = document.querySelector<HTMLElement>(
+          `[data-nav][data-nav-group="${groupId}"]`
+        );
       }
-    }, 0); // Wait for DOM/layout updates if needed
+
+      if (el) {
+        el.focus();
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }, 0);
   };
 
   return (

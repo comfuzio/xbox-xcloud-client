@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 import authController from './controller/auth.js';
 import profileController from './controller/profile.js';
+import smartglassController from './controller/smartglass.js';
 
 const t = initTRPC.create();
 export const router = t.router;
@@ -10,6 +11,7 @@ export const publicProcedure = t.procedure;
 
 const auth = new authController();
 const profile = new profileController();
+const smartglass = new smartglassController();
 
 const zodWebToken = z.object({
   uhs: z.string(),
@@ -25,7 +27,10 @@ export const appRouter = router({
     auth_get_streamingtokens: publicProcedure.input(z.string()).query(async ({ input }) => await auth.getStreamingTokens(input)),
     auth_get_webtoken: publicProcedure.input(z.string()).query(async ({ input }) => await auth.getWebToken(input)),
 
-    profile_get_current: publicProcedure.input(z.object({ token: zodWebToken })).query(async ({ input }) => await profile.getCurrentProfile(input.token))
+    profile_get_current: publicProcedure.input(z.object({ token: zodWebToken })).query(async ({ input }) => await profile.getCurrentProfile(input.token)),
+
+    smartglass_consoles_list: publicProcedure.input(z.object({ token: zodWebToken })).query(async ({ input }) => await smartglass.getConsolesList(input.token)),
+
 
 });
 

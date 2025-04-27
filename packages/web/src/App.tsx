@@ -10,6 +10,8 @@ function App() {
       <Route element={<IndexPage />} path="/" />
       <Route element={<XCloudPage />} path="/xcloud" />
       <Route element={<SettingsPage />} path="/settings" />
+      <Route element={<XCloudPage />} path="/stream/:serverid" />
+
     </Routes>
   );
 }

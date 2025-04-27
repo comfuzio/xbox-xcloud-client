@@ -1,36 +1,47 @@
-import { Snippet } from "@heroui/snippet";
-import { Code } from "@heroui/code";
-
-import { title, subtitle } from "@/components/primitives";
+import { title } from "@/components/primitives";
+import { Link } from "react-router-dom"
 import DefaultLayout from "@/layouts/default";
+import { Card, CardBody, CardFooter, CardHeader, Button, Spinner } from "@heroui/react";
+
+import { useTRPC } from "@/utils/trpc";
+import { useQuery } from "@tanstack/react-query";
+import { getWebToken } from "@/utils/tokenhelper";
 
 export default function IndexPage() {
+  const trpc = useTRPC()
+
+  const consoles = useQuery(trpc.smartglass_consoles_list.queryOptions({ token: getWebToken() }))
+
+  console.log(consoles)
+  
   return (
     <DefaultLayout>
-      <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-        <div className="inline-block max-w-lg text-center justify-center">
-          <span className={title()}>Make&nbsp;</span>
-          <span className={title({ color: "violet" })}>beautiful&nbsp;</span>
-          <br />
-          <span className={title()}>
-            websites regardless of your design experience.
-          </span>
-          <div className={subtitle({ class: "mt-4" })}>
-            Beautiful, fast and modern React UI library.
-          </div>
-        </div>
+      <section className="flex flex-col justify-center gap-4 py-8 md:py-10">
+        <h1 className={title()}>My Consoles</h1>
+        <div className="gap-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
 
-        <div className="flex gap-3">
-          linkiesss
-        </div>
+          {consoles.isLoading && (
+            <Spinner></Spinner>
+          )}
+          {consoles.data?.data.result.map((console) => (
+          <Link key={console.id} to={'/stream/' + console.id} data-nav data-nav-group="default">
+            <Card isFooterBlurred className="w-full h-[150px]">
+              <CardHeader className="absolute z-10 top-1 flex-col items-start">
+                <h4 className="text-white/60 font-medium text-2xl">{console.name}</h4>
+              </CardHeader>
+              <CardFooter className="absolute bg-white/10 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
+                <div>
+                  <p className="text-tiny">{console.id}</p>
+                  <p className="text-tiny">{console.powerState}</p>
+                </div>
+                <Button className="text-tiny" color="primary" radius="full" size="sm">
+                  Start Stream
+                </Button>
+              </CardFooter>
+            </Card>
+          </Link>
+          ))}
 
-        <div className="mt-8">
-          <Snippet hideCopyButton hideSymbol variant="bordered">
-            <span>
-              Get started by editing{" "}
-              <Code color="primary">pages/index.tsx</Code>
-            </span>
-          </Snippet>
         </div>
       </section>
     </DefaultLayout>

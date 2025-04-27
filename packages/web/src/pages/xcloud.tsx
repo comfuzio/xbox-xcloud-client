@@ -11,7 +11,7 @@ export default function xCloudPage() {
         <div className="inline-block max-w-lg text-center justify-center">
           <h1 className={title()}>Blog</h1>
 
-          <Button onPress={ () => { showErrorToast('Tester') }}>Toast!</Button>
+          <Button onPress={ () => { showErrorToast('Tester') }} data-nav data-nav-group="default">Toast!</Button>
         </div>
       </section>
     </DefaultLayout>

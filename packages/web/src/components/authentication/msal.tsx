@@ -1,20 +1,23 @@
-import Head from 'next/head'
-import { setLocalStorage } from '../../utils/localstorage'
-import { useTRPC } from '../../utils/trpc';
-import { useQuery } from '@tanstack/react-query';
+import Head from "next/head";
+import { useQuery } from "@tanstack/react-query";
+
+import { setLocalStorage } from "../../utils/localstorage";
+import { useTRPC } from "../../utils/trpc";
 
 export default function MsalAuthentication() {
-  const trpc = useTRPC()
+  const trpc = useTRPC();
 
-  const msalBootstrap = useQuery(trpc.auth_msal_start.queryOptions())
+  const msalBootstrap = useQuery(trpc.auth_msal_start.queryOptions());
   const msalLoginCallback = useQuery({
-    ...trpc.auth_msal_verify.queryOptions(msalBootstrap.data?.device_code as string),
+    ...trpc.auth_msal_verify.queryOptions(
+      msalBootstrap.data?.device_code as string,
+    ),
     enabled: !!msalBootstrap.data?.device_code,
-  })
+  });
 
-  if(msalLoginCallback.data !== undefined) {
-    setLocalStorage('auth_data_msal', JSON.stringify(msalLoginCallback.data));
-    setLocalStorage('auth_method', 'msal');
+  if (msalLoginCallback.data !== undefined) {
+    setLocalStorage("auth_data_msal", JSON.stringify(msalLoginCallback.data));
+    setLocalStorage("auth_method", "msal");
 
     // Reload page
     window.location.reload();
@@ -25,7 +28,9 @@ export default function MsalAuthentication() {
       <Head>
         <title>Authentication</title>
       </Head>
-        { msalBootstrap.isLoading ? 'Loading authentication url...' : msalBootstrap.data?.message }
+      {msalBootstrap.isLoading
+        ? "Loading authentication url..."
+        : msalBootstrap.data?.message}
     </>
   );
 }

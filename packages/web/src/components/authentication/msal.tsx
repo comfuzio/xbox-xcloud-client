@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 
 import { setLocalStorage } from "../../utils/localstorage";
 import { useTRPC } from "../../utils/trpc";
+import { Card, CardBody, CircularProgress, Code } from "@heroui/react";
+import { card } from "../primitives";
 
 export default function MsalAuthentication() {
   const trpc = useTRPC();
@@ -28,9 +30,24 @@ export default function MsalAuthentication() {
       <Head>
         <title>Authentication</title>
       </Head>
-      {msalBootstrap.isLoading
-        ? "Loading authentication url..."
-        : msalBootstrap.data?.message}
+      <Card className={card()}>
+        <CardBody>
+        {msalBootstrap.isLoading
+        ? 
+        <>
+          <center><CircularProgress
+            size="lg"
+            aria-label="Loading authentication..."
+           /></center>
+        </>
+        : 
+        <div>
+          <p>To sign in, use a web browser to open the page <Code>{ msalBootstrap.data?.verification_uri }</Code> and enter the code <Code>{ msalBootstrap.data?.user_code }</Code> to authenticate.</p>
+        </div>
+        }
+        </CardBody>
+      </Card>
+      
     </>
   );
 }

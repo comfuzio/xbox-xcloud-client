@@ -8,6 +8,7 @@ import { TrpcProviderComponent } from './providers/trpc'
 import { StorageProvider } from "./providers/storage";
 
 import { ToastProvider } from "@heroui/react";
+import { ModalProvider } from "./providers/modal";
 
 // declare module "@react-types/shared" {
 //   interface RouterConfig {
@@ -23,11 +24,13 @@ export function Provider({ children }: { children: React.ReactNode }) {
       <GamepadNavigationProvider>
         <StorageProvider>
           <HeroUIProvider navigate={navigate} useHref={useHref}>
-            <ToastProvider toastProps={{
-              timeout: 5000
-            }} />
-            
-            {children}
+            <ModalProvider>
+              <ToastProvider toastProps={{
+                timeout: 5000
+              }} />
+              
+              {children}
+            </ModalProvider>
           </HeroUIProvider>
         </StorageProvider>
       </GamepadNavigationProvider>

@@ -9,6 +9,7 @@ import { getWebToken } from '../utils/tokenhelper';
 import { useQuery } from '@tanstack/react-query';
 
 import MsalAuthentication from './authentication/msal'
+import { card } from './primitives';
 
 /*
  The authentication component is responsible for handling the authentication flow for the application. It checks if the user is signed in,
@@ -93,7 +94,7 @@ export default function Authentication({ children }:AuthenticationProps) {
           // We are signed in, but we dont have tokens yet..
           (authStreamingTokens.isLoading || authWebTokens.isLoading) ?
             <main className="container mx-auto max-w-screen px-6 flex-grow pt-16">
-              <Card><CardBody>
+              <Card className={card()}><CardBody>
                 <center>
                   <CircularProgress label="Authenticating..." />
                   <br />
@@ -110,7 +111,7 @@ export default function Authentication({ children }:AuthenticationProps) {
             <MsalAuthentication /> :
             <Fragment>
               <center>
-                <Button tabIndex={0} key='1'data-nav data-nav-group="default" color="primary" onPress={() => { setAuthMethod('xal') }}>Start XAL</Button>
+                <Button tabIndex={0} key='1'data-nav data-nav-group="default" color="primary" onPress={() => { setAuthMethod('xal') }}>Start XAL (Not working)</Button> &nbsp; 
                 <Button tabIndex={0} key='2' data-nav data-nav-group="default" color="primary" onPress={() => { setAuthMethod('msal') }}>Start MSAL</Button>
               </center>
             </Fragment>

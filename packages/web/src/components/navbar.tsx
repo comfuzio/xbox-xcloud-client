@@ -19,7 +19,7 @@ import { useTRPC } from '../utils/trpc';
 
 import { getWebToken } from "@/utils/tokenhelper";
 
-function extractUserData(userResponse?: {
+export function extractUserData(userResponse?: {
   value: string;
   id: string;
 }[]) {

@@ -51,3 +51,7 @@ export const subtitle = tv({
     fullWidth: true,
   },
 });
+
+export const card = tv({
+  base: "bg-default-100 p-5",
+});

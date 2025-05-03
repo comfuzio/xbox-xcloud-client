@@ -29,15 +29,14 @@ export function getxHomeToken() {
     market = parsedToken.market;
     token = parsedToken.gsToken;
 
-    for(const cloudRegion of parsedToken.offeringSettings.regions){
-      if(cloudRegion.isDefault){
+    for (const cloudRegion of parsedToken.offeringSettings.regions) {
+      if (cloudRegion.isDefault) {
         const match = cloudRegion.baseUri.match(/^https?:\/\/([a-z]+)\./);
+
         region = match ? match[1] : "";
       }
     }
   }
-
-  console.log('tokens', { token, market, region })
 
   return { token, market, region };
 }

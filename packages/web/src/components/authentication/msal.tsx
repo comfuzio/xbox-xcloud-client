@@ -1,9 +1,9 @@
 import Head from "next/head";
 import { useQuery } from "@tanstack/react-query";
+import { Card, CardBody, CircularProgress, Code } from "@heroui/react";
 
 import { setLocalStorage } from "../../utils/localstorage";
 import { useTRPC } from "../../utils/trpc";
-import { Card, CardBody, CircularProgress, Code } from "@heroui/react";
 import { card } from "../primitives";
 
 export default function MsalAuthentication() {
@@ -32,22 +32,27 @@ export default function MsalAuthentication() {
       </Head>
       <Card className={card()}>
         <CardBody>
-        {msalBootstrap.isLoading
-        ? 
-        <>
-          <center><CircularProgress
-            size="lg"
-            aria-label="Loading authentication..."
-           /></center>
-        </>
-        : 
-        <div>
-          <p>To sign in, use a web browser to open the page <Code>{ msalBootstrap.data?.verification_uri }</Code> and enter the code <Code>{ msalBootstrap.data?.user_code }</Code> to authenticate.</p>
-        </div>
-        }
+          {msalBootstrap.isLoading ? (
+            <>
+              <center>
+                <CircularProgress
+                  aria-label="Loading authentication..."
+                  size="lg"
+                />
+              </center>
+            </>
+          ) : (
+            <div>
+              <p>
+                To sign in, use a web browser to open the page{" "}
+                <Code>{msalBootstrap.data?.verification_uri}</Code> and enter
+                the code <Code>{msalBootstrap.data?.user_code}</Code> to
+                authenticate.
+              </p>
+            </div>
+          )}
         </CardBody>
       </Card>
-      
     </>
   );
 }

@@ -35,7 +35,7 @@ export default function XCloudLibraryPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 grid-cols-[repeat(auto-fit,_minmax(250px,_1fr))]">
+      <div className="grid gap-4 grid-cols-[repeat(auto-fit,_minmax(250px,_1fr))] items-center justify-items-center">
         {titles.isLoading ? (
           <CircularProgress aria-label="Loading titles..." size="lg" />
         ) : (
@@ -56,7 +56,7 @@ export default function XCloudLibraryPage() {
                   width={250}
                 />
                 <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
-                  <p className="text-tiny text-white/80">{game.ProductTitle}</p>
+                  <p className="text-tiny text-white/80" style={{ textShadow: '0px 0px 4px #000000' }}>{game.ProductTitle}</p>
                   <Button
                     className="text-tiny"
                     color="primary"

@@ -25,6 +25,87 @@ export const GamepadNavigationProvider = ({ children }: { children: ReactNode })
   // Instead of saving element, save a 'selector-like' path
   const lastFocusedPathByGroup = useRef<Map<string, string>>(new Map());
 
+  const getScrollParent = (element: HTMLElement): HTMLElement | Window => {
+    let parent: HTMLElement | null = element.parentElement;
+  
+    while (parent) {
+      const style = getComputedStyle(parent);
+      const overflowY = style.overflowY;
+      const isScrollable = overflowY === 'auto' || overflowY === 'scroll';
+  
+      if (isScrollable && parent.scrollHeight > parent.clientHeight) {
+        return parent;
+      }
+  
+      parent = parent.parentElement;
+    }
+  
+    return window;
+  };
+  
+  const scrollElement = (el: HTMLElement | Window, targetScroll: number) => {
+    if (el === window) {
+      window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+    } else {
+      (el as HTMLElement).scrollTo({ top: targetScroll, behavior: 'smooth' });
+    }
+  };
+  
+
+  const isMostlyVisible = (rect: DOMRect, containerRect: DOMRect, minVisibleRatio = 0.1) => {
+    const visibleTop = Math.max(rect.top, containerRect.top);
+    const visibleBottom = Math.min(rect.bottom, containerRect.bottom);
+    const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+    const requiredHeight = rect.height * minVisibleRatio;
+    return visibleHeight >= requiredHeight;
+  };
+  
+  const scrollWithOffset = (el: HTMLElement, windowOffset = 100) => {
+    const container = getScrollParent(el);
+    const elRect = el.getBoundingClientRect();
+  
+    if (container === window) {
+      const top = window.scrollY + elRect.top - windowOffset;
+      const bottom = window.scrollY + elRect.bottom - window.innerHeight;
+  
+      const windowRect: DOMRect = {
+        top: windowOffset,
+        bottom: window.innerHeight,
+        left: 0,
+        right: 0,
+        width: 0,
+        height: 0,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      };
+  
+      if (!isMostlyVisible(elRect, windowRect)) {
+        if (elRect.top < windowOffset) {
+          scrollElement(window, top);
+        } else {
+          scrollElement(window, bottom);
+        }
+      }
+  
+      return;
+    }
+  
+    const c = container as HTMLElement;
+    const cRect = c.getBoundingClientRect();
+    const elTop = el.offsetTop;
+    const elBottom = elTop + el.offsetHeight;
+    const scrollTop = c.scrollTop;
+  
+    if (!isMostlyVisible(elRect, cRect)) {
+      if (elTop < scrollTop) {
+        scrollElement(c, elTop);
+      } else if (elBottom > scrollTop + c.clientHeight) {
+        scrollElement(c, elBottom - c.clientHeight);
+      }
+    }
+  };  
+
   const getElementPath = (el: HTMLElement) => {
     if (!el) return '';
     const path = [];
@@ -100,7 +181,8 @@ export const GamepadNavigationProvider = ({ children }: { children: ReactNode })
 
     if (best) {
       best.focus();
-      best.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      // best.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      scrollWithOffset(best, 100); // Add 100px top margin
     }
   };
 
@@ -183,7 +265,7 @@ export const GamepadNavigationProvider = ({ children }: { children: ReactNode })
   const setActiveGroup = (groupId: string) => {
     setActiveGroupState(groupId);
 
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       const path = lastFocusedPathByGroup.current.get(groupId);
       let el: HTMLElement | null = getElementByPath(path || '');
 
@@ -195,9 +277,9 @@ export const GamepadNavigationProvider = ({ children }: { children: ReactNode })
 
       if (el) {
         el.focus();
-        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        scrollWithOffset(el, 100); // Add 100px top margin
       }
-    }, 0);
+    });
   };
 
   return (

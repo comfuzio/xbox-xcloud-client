@@ -1,5 +1,5 @@
 import { title } from "@/components/primitives";
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { Card, CardFooter, CardHeader, Button, Spinner } from "@heroui/react";
 
 import { useTRPC } from "@/utils/trpc";
@@ -8,6 +8,7 @@ import { getWebToken } from "@/utils/tokenhelper";
 
 export default function IndexPage() {
   const trpc = useTRPC()
+  const navigate = useNavigate()
 
   const consoles = useQuery(trpc.smartglass_consoles_list.queryOptions({ token: getWebToken() }))
   
@@ -21,7 +22,7 @@ export default function IndexPage() {
         )}
         {consoles.data?.data.result.map((console) => (
         <Link key={console.id} to={'/stream/' + console.id} data-nav data-nav-group="default">
-          <Card isFooterBlurred className="w-full h-[150px]">
+          {/* <Card isFooterBlurred className="w-full h-[150px]">
             <CardHeader className="absolute z-10 top-1 flex-col items-start">
               <h4 className="text-white/60 font-medium text-2xl">{console.name}</h4>
             </CardHeader>
@@ -32,6 +33,23 @@ export default function IndexPage() {
               </div>
               <Button className="text-tiny" color="primary" radius="full" size="sm">
                 Start Stream
+              </Button>
+            </CardFooter>
+          </Card> */}
+          <Card isFooterBlurred className="border-none h-[140px]" radius="lg">
+            <CardHeader className="absolute z-10 top-1 flex-col items-start">
+              <h4 className="text-white/60 font-medium text-2xl">{console.name}</h4>
+            </CardHeader>
+            <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
+            <p className="text-tiny text-white/80">Standby</p>
+            <Button
+                className="text-tiny"
+                color="primary"
+                radius="lg"
+                size="sm"
+                onPress={() => navigate("/stream/xcloud/GAME_ID")}
+              >
+                Play
               </Button>
             </CardFooter>
           </Card>

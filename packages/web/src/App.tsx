@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 
 import IndexPage from "@/pages/index";
 import XCloudPage from "./pages/xcloud";
+import XCloudLibraryPage from "./pages/xcloud/library";
 import StreamPage from "./pages/stream";
 
 import SettingsAboutPage from "./pages/settings/about";
@@ -17,10 +18,13 @@ function App() {
   return (
     <Routes>
       <Route element={<StreamPage />} path="/stream/:serverid" />
+      <Route element={<StreamPage />} path="/stream/xcloud/:serverid" />
 
       <Route element={<DefaultLayout />}>
         <Route element={<IndexPage />} path="/" />
         <Route element={<XCloudPage />} path="/xcloud" />
+        <Route element={<XCloudLibraryPage />} path="/xcloud/library" />
+
         <Route element={<SettingsLayout />}>
           <Route element={<SettingsAboutPage />} path="/settings" />
           <Route element={<SettingsAboutPage />} path="/settings/about" />

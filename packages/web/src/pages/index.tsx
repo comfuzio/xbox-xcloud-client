@@ -12,7 +12,7 @@ export default function IndexPage() {
   const consoles = useQuery(trpc.smartglass_consoles_list.queryOptions({ token: getWebToken() }))
   
   return (
-    <section className="flex flex-col justify-center gap-4 py-8 md:py-10">
+    <section className="flex flex-col justify-center gap-4 py-4">
       <h1 className={title()}>My Consoles</h1>
       <div className="gap-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
 

@@ -1,5 +1,5 @@
 import { title } from "@/components/primitives";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 
 export default function StreamPage() {

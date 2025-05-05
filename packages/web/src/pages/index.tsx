@@ -1,4 +1,4 @@
-import { title } from "@/components/primitives";
+import { card, title } from "@/components/primitives";
 import { Link, useNavigate } from "react-router-dom"
 import { Card, CardFooter, CardHeader, Button, Spinner } from "@heroui/react";
 
@@ -36,7 +36,7 @@ export default function IndexPage() {
               </Button>
             </CardFooter>
           </Card> */}
-          <Card isFooterBlurred className="border-none h-[140px]" radius="lg">
+          <Card isFooterBlurred className={ card()+" px-0 h-[140px]"} radius="lg">
             <CardHeader className="absolute z-10 top-1 flex-col items-start">
               <h4 className="text-white/60 font-medium text-2xl">{console.name}</h4>
             </CardHeader>
@@ -47,7 +47,7 @@ export default function IndexPage() {
                 color="primary"
                 radius="lg"
                 size="sm"
-                onPress={() => navigate("/stream/xcloud/GAME_ID")}
+                onPress={() => navigate("/stream/" + console.id)}
               >
                 Play
               </Button>

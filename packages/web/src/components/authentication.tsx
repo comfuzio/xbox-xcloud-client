@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import MsalAuthentication from './authentication/msal'
 import { card } from './primitives';
+import { showErrorToast } from '../utils/toast';
 
 /*
  The authentication component is responsible for handling the authentication flow for the application. It checks if the user is signed in,
@@ -65,7 +66,11 @@ export default function Authentication({ children }:AuthenticationProps) {
     setSessionStorage('auth_web_token_expires', date.toISOString())
   }
   if(authStreamingTokens.isSuccess && authStreamingTokens.data !== undefined){
-    setSessionStorage('auth_xcloud_token', JSON.stringify(authStreamingTokens.data.xCloudToken.data))
+    if(authStreamingTokens.data.xCloudToken !== undefined) {
+      setSessionStorage('auth_xcloud_token', JSON.stringify(authStreamingTokens.data.xCloudToken.data))
+    } else {
+      showErrorToast('Failed to retrieve xCloud token. xCloud Gaming servers might be down.')
+    }
     setSessionStorage('auth_xhome_token', JSON.stringify(authStreamingTokens.data.xHomeToken.data))
   }
 

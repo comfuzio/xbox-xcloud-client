@@ -7,13 +7,13 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useTRPC } from "@/utils/trpc";
 import { title } from "@/components/primitives";
-import { getxHomeToken } from "@/utils/tokenhelper";
+import { getStreamingToken } from "@/utils/tokenhelper";
 
 export default function XCloudLibraryPage() {
   const navigate = useNavigate();
   const trpc = useTRPC();
   const titles = useQuery(
-    trpc.gamepass_get_titles.queryOptions({ token: getxHomeToken() }),
+    trpc.gamepass_get_titles.queryOptions({ token: getStreamingToken() }),
   );
 
   //   console.log(titles);
@@ -45,11 +45,11 @@ export default function XCloudLibraryPage() {
               data-nav
               className="w-[250px]"
               data-nav-group="default"
-              to={"/stream/xcloud/GAME_ID"}
+              to={"/stream/xcloud/" + game.XCloudTitleId}
             >
               <Card isFooterBlurred className="border-none" radius="lg">
                 <Image
-                  alt="7 Days to Die - Console Edition (Game Preview)"
+                  alt="{game.ProductTitle}"
                   className="object-cover"
                   height={250}
                   src={"https:" + (game.Image_Tile.URL ?? "")}
@@ -62,7 +62,7 @@ export default function XCloudLibraryPage() {
                     color="primary"
                     radius="lg"
                     size="sm"
-                    onPress={() => navigate("/stream/xcloud/GAME_ID")}
+                    onPress={() => navigate("/stream/xcloud/"+game.XCloudTitleId)}
                   >
                     Play
                   </Button>

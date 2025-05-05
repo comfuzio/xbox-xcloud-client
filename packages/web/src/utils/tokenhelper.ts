@@ -16,14 +16,14 @@ export function getWebToken() {
   return { uhs: uhs, token: token };
 }
 
-export function getxHomeToken() {
+export function getStreamingToken() {
   const xhomeToken = getSessionStorage("auth_xcloud_token") ?? undefined;
 
   let market = "";
   let token = "";
   let region = "";
 
-  if (xhomeToken !== undefined) {
+  if (xhomeToken !== undefined && (xhomeToken as any) !== 'undefined') {
     const parsedToken = JSON.parse(xhomeToken);
 
     market = parsedToken.market;

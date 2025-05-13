@@ -40,7 +40,10 @@ export const appRouter = router({
     smartglass_consoles_list: publicProcedure.input(z.object({ token: zodWebToken })).query(async ({ input }) => await smartglass.getConsolesList(input.token)),
 
     gamepass_get_titles: publicProcedure.input(z.object({ token: zodXhomeToken })).query(async ({ input }) => await gamepass.getTitles(input.token)),
+    gamepass_get_recent_titles: publicProcedure.input(z.object({ token: zodXhomeToken })).query(async ({ input }) => await gamepass.getRecentTitles(input.token)),
 
+    gamepass_batch_productids: publicProcedure.input(z.object({ token: zodXhomeToken, productIds: z.array(z.string()) })).mutation(async ({ input }) => await gamepass.resolveTitles(input.token, input.productIds)),
+    gamepass_resolve_productid: publicProcedure.input(z.object({ token: zodXhomeToken, productId: z.string() })).query(async ({ input }) => await gamepass.resolveTitle(input.token, input.productId)),
 });
 
 export default appRouter;

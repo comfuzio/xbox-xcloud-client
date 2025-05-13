@@ -1,22 +1,37 @@
-import { Button, CircularProgress } from "@heroui/react";
-import { Input } from "@heroui/react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { Card, CardFooter, Image } from "@heroui/react";
+import { CircularProgress, Input } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useContext } from "react";
 
+import { TitleManagerContext } from "@/providers/titlemanager";
 import { useTRPC } from "@/utils/trpc";
 import { title } from "@/components/primitives";
 import { getStreamingToken } from "@/utils/tokenhelper";
+import GameTile from "@/components/gametile";
 
 export default function XCloudLibraryPage() {
-  const navigate = useNavigate();
+  const { metadata, setGames } = useContext(TitleManagerContext);
   const trpc = useTRPC();
   const titles = useQuery(
     trpc.gamepass_get_titles.queryOptions({ token: getStreamingToken() }),
   );
 
-  //   console.log(titles);
+  useEffect(() => {
+    if (titles.data !== undefined) {
+      const newMap = new Map<string, any>();
+
+      for (const title of titles.data.data.results) {
+        if (metadata.has(title.titleId)) {
+          continue;
+        }
+        newMap.set(title.titleId, title.details);
+      }
+      if (newMap.size > 0) {
+        setGames(newMap);
+      }
+    }
+  }, [titles]);
+
+  // console.log("titles", titles.data?.data.results);
 
   return (
     <section className="flex flex-col justify-center gap-4 py-4">
@@ -35,41 +50,17 @@ export default function XCloudLibraryPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 grid-cols-[repeat(auto-fit,_minmax(250px,_1fr))] items-center justify-items-center">
+      <div
+        className={
+          "flex items-center text-center flex-wrap justify-start gap-4 p-4"
+        }
+      >
         {titles.isLoading ? (
           <CircularProgress aria-label="Loading titles..." size="lg" />
         ) : (
-          titles.data?.map((game) => (
-            <Link
-              key={game.XCloudTitleId}
-              data-nav
-              className="w-[250px]"
-              data-nav-group="default"
-              to={"/stream/xcloud/" + game.XCloudTitleId}
-            >
-              <Card isFooterBlurred className="border-none" radius="lg">
-                <Image
-                  alt="{game.ProductTitle}"
-                  className="object-cover"
-                  height={250}
-                  src={"https:" + (game.Image_Tile.URL ?? "")}
-                  width={250}
-                />
-                <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
-                  <p className="text-tiny text-white/80" style={{ textShadow: '0px 0px 4px #000000' }}>{game.ProductTitle}</p>
-                  <Button
-                    className="text-tiny"
-                    color="primary"
-                    radius="lg"
-                    size="sm"
-                    onPress={() => navigate("/stream/xcloud/"+game.XCloudTitleId)}
-                  >
-                    Play
-                  </Button>
-                </CardFooter>
-              </Card>
-            </Link>
-          ))
+          titles.data?.data.results.map((title: any) => {
+            return <GameTile key={title.titleId} cloudTitle={title.titleId} />;
+          })
         )}
       </div>
     </section>

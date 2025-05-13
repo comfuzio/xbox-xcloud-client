@@ -23,7 +23,7 @@ export function getStreamingToken() {
   let token = "";
   let region = "";
 
-  if (xhomeToken !== undefined && (xhomeToken as any) !== 'undefined') {
+  if (xhomeToken !== undefined && (xhomeToken as any) !== "undefined") {
     const parsedToken = JSON.parse(xhomeToken);
 
     market = parsedToken.market;

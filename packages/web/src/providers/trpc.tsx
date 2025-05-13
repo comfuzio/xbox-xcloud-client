@@ -60,7 +60,7 @@ function createWebsocketUrl() {
 
     if (typeof window !== "undefined") {
       wsPort = Number(localStorage.getItem('ws_port')) || 5050
-      wsHost = localStorage.getItem('ws_host') || 'localhost'
+      wsHost = localStorage.getItem('ws_host') || window.location.hostname
       wsProtocol = localStorage.getItem('ws_protocol') || 'ws'
     }
     return `${wsProtocol}://${wsHost}:${wsPort}`;

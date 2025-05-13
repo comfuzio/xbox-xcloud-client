@@ -1,11 +1,12 @@
 import { Route, Routes } from "react-router-dom";
 
 import IndexPage from "@/pages/index";
-import XCloudPage from "./pages/xcloud";
+import XCloudPage from "./pages/xcloud/index";
 import XCloudLibraryPage from "./pages/xcloud/library";
 import StreamPage from "./pages/stream";
 
 import SettingsAboutPage from "./pages/settings/about";
+import SettingsGeneralPage from "./pages/settings/general";
 import SettingsStreamingPage from "./pages/settings/streaming";
 import SettingsInputPage from "./pages/settings/input";
 import SettingsAudioVideoPage from "./pages/settings/audiovideo";
@@ -13,6 +14,7 @@ import SettingsDebugPage from "./pages/settings/debug";
 
 import DefaultLayout from "@/layouts/default";
 import SettingsLayout from "@/layouts/settings";
+import XCloudLayout from "@/layouts/xcloud";
 
 function App() {
   return (
@@ -22,12 +24,16 @@ function App() {
 
       <Route element={<DefaultLayout />}>
         <Route element={<IndexPage />} path="/" />
-        <Route element={<XCloudPage />} path="/xcloud" />
-        <Route element={<XCloudLibraryPage />} path="/xcloud/library" />
+
+        <Route element={<XCloudLayout />}>
+          <Route element={<XCloudPage />} path="/xcloud" />
+          <Route element={<XCloudLibraryPage />} path="/xcloud/library" />
+        </Route>
 
         <Route element={<SettingsLayout />}>
           <Route element={<SettingsAboutPage />} path="/settings" />
           <Route element={<SettingsAboutPage />} path="/settings/about" />
+          <Route element={<SettingsGeneralPage />} path="/settings/general" />
           <Route element={<SettingsStreamingPage />} path="/settings/streaming" />
           <Route element={<SettingsInputPage />} path="/settings/input" />
           <Route element={<SettingsAudioVideoPage />} path="/settings/audiovideo" />

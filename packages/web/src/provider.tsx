@@ -6,6 +6,7 @@ import { useHref, useNavigate } from "react-router-dom";
 import { GamepadNavigationProvider } from './providers/gamepadnav'
 import { TrpcProviderComponent } from './providers/trpc'
 import { StorageProvider } from "./providers/storage";
+import { TitleManagerProvider } from "./providers/titlemanager";
 
 import { ToastProvider } from "@heroui/react";
 import { ModalProvider } from "./providers/modal";
@@ -23,15 +24,17 @@ export function Provider({ children }: { children: React.ReactNode }) {
     <TrpcProviderComponent>
       <GamepadNavigationProvider>
         <StorageProvider>
-          <HeroUIProvider navigate={navigate} useHref={useHref}>
-            <ModalProvider>
-              <ToastProvider toastProps={{
-                timeout: 5000
-              }} />
-              
-              {children}
-            </ModalProvider>
-          </HeroUIProvider>
+          <TitleManagerProvider>
+            <HeroUIProvider navigate={navigate} useHref={useHref}>
+              <ModalProvider>
+                <ToastProvider toastProps={{
+                  timeout: 5000
+                }} />
+                
+                {children}
+              </ModalProvider>
+            </HeroUIProvider>
+          </TitleManagerProvider>
         </StorageProvider>
       </GamepadNavigationProvider>
     </TrpcProviderComponent>

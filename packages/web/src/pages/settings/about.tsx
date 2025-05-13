@@ -101,8 +101,18 @@ export default function SettingsPage() {
 
           <p className="text-sm text-default-500 pt-6">
             Website:
-            <Button className="ml-2" size="sm" data-nav
-                data-nav-group="default" onPress={() => { window.open('https://github.com/unknownskl/greenlight', '_blank'); }}>
+            <Button
+              data-nav
+              className="ml-2"
+              data-nav-group="default"
+              size="sm"
+              onPress={() => {
+                window.open(
+                  "https://github.com/unknownskl/greenlight",
+                  "_blank",
+                );
+              }}
+            >
               <Link
                 target="_blank"
                 to="https://github.com/unknownskl/greenlight"

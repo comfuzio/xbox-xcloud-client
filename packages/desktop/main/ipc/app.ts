@@ -61,7 +61,7 @@ export default class IpcApp extends IpcBase {
             }, 100)
         })
     }
-    
+
     restart(){
         return new Promise<boolean>((resolve) => {
             resolve(true)
@@ -107,7 +107,7 @@ export default class IpcApp extends IpcBase {
                 autoStream: this._application.getStartupFlags().autoStream,
             })
             this._application.getStartupFlags().autoStream = ''
-        }) 
+        })
     }
 
     setForceRegionIp(args:setForceRegionIpArgs){
@@ -115,8 +115,14 @@ export default class IpcApp extends IpcBase {
             console.log('IPC received force region IP data and write to store:', args.ip)
             this._application._store.set('force_region_ip', args.ip)
 
-            // Rerun silent flow to retrieve new tokens
-            this._application._authentication.startSilentFlow()
+            // Recreate Xal instance to reset all internal state and connections
+            const { _authentication } = this._application
+            const { _tokenStore } = _authentication
+            const { Xal } = require('xal-node')
+            _authentication._xal = new Xal(_tokenStore)
+
+            // Rerun silent flow to retrieve new tokens with new region
+            _authentication.startSilentFlow()
 
             resolve(true)
         })

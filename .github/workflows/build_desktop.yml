@@ -205,6 +205,10 @@ jobs:
             node_modules/
           key: ${{ runner.os }}-${{ runner.arch }}-yarn-${{ hashFiles('**/package.json') }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-${{ runner.arch }}-yarn-
+      
+      - name: Reset node_modules cache (if enabled)
+        if: env.reset_cache == 'true'
+        run: rm -rf node_modules/
 
       - name: Install yarn dependencies
         run: yarn

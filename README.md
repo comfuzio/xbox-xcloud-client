@@ -108,4 +108,4 @@ Create production build:
 
 ## Changelog
 
-See [changelog](CHANGELOG.md).
+See [changelog](https://unknownskl.github.io/greenlight/docs/desktop/changelog).

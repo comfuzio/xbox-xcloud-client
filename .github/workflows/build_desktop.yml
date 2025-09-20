@@ -129,9 +129,13 @@ jobs:
           path: ./deps-dist/
 
   flatpak:
-    name: Flatpak Build
+    name: Flatpak Build (${{ matrix.arch }})
     runs-on: ubuntu-latest
     needs: [cachedeps]
+    
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64]
 
     container:
       image: bilelmoussaoui/flatpak-github-actions:gnome-45
@@ -161,20 +165,21 @@ jobs:
             build/
             .flatpak-builder/
             flatpak-node/
-          key: ${{ runner.os }}-${{ runner.arch }}-flatpak-builder-${{ hashFiles('flatpak/*') }}
-          restore-keys: ${{ runner.os }}-${{ runner.arch }}-flatpak-builder-
+          key: ${{ runner.os }}-${{ matrix.arch }}-flatpak-builder-${{ hashFiles('flatpak/*') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.arch }}-flatpak-builder-
 
       - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
-          bundle: greenlight.flatpak
+          bundle: greenlight-${{ matrix.arch }}.flatpak
           manifest-path: packages/desktop/flatpak/io.github.unknownskl.greenlight.yml
-          cache-key: flatpak-builder-${{ github.sha }}
+          cache-key: flatpak-builder-${{ github.sha }}-${{ matrix.arch }}
+          arch: ${{ matrix.arch }}
 
       - name: Release flatpak
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/v')
         with:
-          files: greenlight.flatpak
+          files: greenlight-${{ matrix.arch }}.flatpak
           draft: true
 
   release:

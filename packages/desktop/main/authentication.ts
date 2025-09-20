@@ -10,7 +10,7 @@ export default class Authentication {
 
     _tokenStore:AuthTokenStore
     _xal:Xal
-    
+
     _authWindow
     _authCallback
 
@@ -40,7 +40,7 @@ export default class Authentication {
                 this.startSilentFlow()
 
                 return true
-    
+
             } else {
                 this._application.log('authenticationV2', '[checkAuthentication()] No tokens are present.')
                 return false
@@ -51,6 +51,15 @@ export default class Authentication {
     startSilentFlow(){
         this._application.log('authenticationV2', '[startSilentFlow()] Starting silent flow...')
         this._isAuthenticating = true
+
+        // Force region spoofing if set
+        const forceRegionIp = this._application._store.get('force_region_ip', '')
+        if (forceRegionIp && typeof forceRegionIp === 'string' && forceRegionIp.trim() !== '') {
+            this._xal.setDefaultHeaders({ 'X-Forwarded-For': forceRegionIp.trim() })
+            this._application.log('authenticationV2', '[startSilentFlow()] Using X-Forwarded-For:', forceRegionIp)
+        } else {
+            this._xal.setDefaultHeaders({})
+        }
 
         this._xal.refreshTokens().then(() => {
             this._application.log('authenticationV2', '[startSilentFlow()] Tokens have been refreshed')
@@ -66,7 +75,7 @@ export default class Authentication {
 
                 this._xal.getWebToken().then((webToken) => {
                     this._application.log('authenticationV2', __filename+'[startSilentFlow()] Web token received')
-                    
+
                     this._application.authenticationCompleted(streamingTokens, webToken)
 
                 }).catch((error) => {
@@ -97,7 +106,7 @@ export default class Authentication {
 
     startAuthflow(){
         this._application.log('authenticationV2', '[startAuthflow()] Starting authentication flow')
-        
+
         this._xal.getRedirectUri().then((redirect) => {
             this.openAuthWindow(redirect.sisuAuth.MsaOauthRedirect)
 
@@ -153,7 +162,7 @@ export default class Authentication {
             height: 600,
             title: 'Authentication',
         })
-        
+
         authWindow.loadURL(url)
         this._authWindow = authWindow
 
@@ -189,5 +198,5 @@ export default class Authentication {
         return { xHomeToken: this._xal._xhomeToken, xCloudToken: this._xal._xcloudToken }
     }
 
-    
+
 }

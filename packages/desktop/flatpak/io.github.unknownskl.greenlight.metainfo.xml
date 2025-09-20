@@ -22,7 +22,7 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="2.3.2" date="2025-09-20">
+    <release version="2.3.3" date="2025-09-20">
      <description>
         <ul>
           <li>Improve silent token authentication and fix region selector not being active during SilentFlow (credits to @chefranov) #1458 #1199 #1119</li>
@@ -31,7 +31,7 @@
         </ul>
      </description>
     </release>
-    <release version="2.3.3" date="2025-04-11">
+    <release version="2.3.2" date="2025-04-11">
      <description>
         <ul>
           <li>Add a stream volume control slider to the Gamebar UI (credits to @dylanlanigansmith)</li>

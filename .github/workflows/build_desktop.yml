@@ -157,6 +157,11 @@ jobs:
         with:
           node-version: ${{ env.node_version }}
 
+      - name: Set up QEMU for cross-arch builds
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
+
       - name: Set up flatpak build cache
         uses: actions/cache@v4
         continue-on-error: false

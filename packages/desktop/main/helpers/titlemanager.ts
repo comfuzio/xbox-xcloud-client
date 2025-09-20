@@ -51,15 +51,32 @@ export default class TitleManager {
             }
 
             if(this._productIdQueue.length > 0){
-                this._http.post('catalog.gamepass.com', '/v3/products?market=US&language=en-US&hydration=RemoteHighSapphire0', { // RemoteLowJade0
-                    'Products': this._productIdQueue,
-                }, {
-                    'ms-cv': 0,
-                    'calling-app-name': 'Xbox Cloud Gaming Web',
-                    'calling-app-version': '21.0.0',
 
-                }).then((result:any) => {
-                    this.populateTitleInfo(result.Products)
+                // Create batches of 100
+                const batches = []
+                for(let i = 0; i < this._productIdQueue.length; i += 100) {
+                    batches.push(this._productIdQueue.slice(i, i + 100))
+                }
+
+                // Create promises for each batch
+                const batchPromises = batches.map(batch => 
+                    this._http.post('catalog.gamepass.com', '/v3/products?market=US&language=en-US&hydration=RemoteHighSapphire0', {
+                        'Products': batch,
+                    }, {
+                        'ms-cv': 0,
+                        'calling-app-name': 'Xbox Cloud Gaming Web',
+                        'calling-app-version': '21.0.0',
+                    })
+                )
+
+                // Execute all batches and merge results
+                Promise.all(batchPromises).then((results: any[]) => {
+                    const allProducts = results.reduce((current, result) => {
+                        return { ...current, ...result.Products }
+                    }, {})
+
+                    console.log('Retrieved information from store:', allProducts)
+                    this.populateTitleInfo(allProducts)
                     resolve(true)
 
                 }).catch((error) => {

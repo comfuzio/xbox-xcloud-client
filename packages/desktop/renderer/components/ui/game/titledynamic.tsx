@@ -34,7 +34,7 @@ function GameTitleDynamic({
                 { (titleData.isFetched === true && titleData.data.titleId !== undefined) ? <Link href={ `/stream/xcloud_${ titleId }` }>
 
                     <Image 
-                        src={ 'https:'+titleData.data.catalogDetails.Image_Tile.URL }
+                        src={ 'https:'+titleData.data.catalogDetails.Image_Tile?.URL }
                         alt={ titleData.data.catalogDetails.ProductTitle }
                         width='280' height='280' style={{
                             width: 140,

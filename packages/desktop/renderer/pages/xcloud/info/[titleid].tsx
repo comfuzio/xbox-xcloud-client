@@ -33,7 +33,7 @@ function xCloudInfo() {
 
             {(productDetails.isFetched !== true) ? <React.Fragment><Loader></Loader></React.Fragment> : <React.Fragment>
                 <div id="page_info_background" style={{
-                    background: 'linear-gradient(0deg, rgba(26,27,30,0.7) 0%, rgba(26,27,30,0.7) 90%, rgba(26,27,30,0.7) 100%), url(https:'+ productDetails.data.catalogDetails.Image_Hero.URL +')',
+                    background: 'linear-gradient(0deg, rgba(26,27,30,0.7) 0%, rgba(26,27,30,0.7) 90%, rgba(26,27,30,0.7) 100%), url(https:'+ productDetails.data.catalogDetails.Image_Hero?.URL +')',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: 'cover',
@@ -47,7 +47,7 @@ function xCloudInfo() {
                     </div>
 
                     <div id="page_info_titleid_sidebar">
-                        <Image src={ 'https:'+productDetails.data.catalogDetails.Image_Poster.URL } alt={productName} width={ 640/4 } height={ 960/4 } /><br />
+                        <Image src={ 'https:'+productDetails.data.catalogDetails.Image_Poster?.URL } alt={productName} width={ 640/4 } height={ 960/4 } /><br />
                         <br />
 
                         <Link href={ '/stream/xcloud_'+router.query.titleid }>

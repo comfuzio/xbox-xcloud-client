@@ -22,11 +22,20 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="2.3.2" date="2025-04-11">
+    <release version="2.3.2" date="2025-09-20">
      <description>
         <ul>
-          <li>- Add a stream volume control slider to the Gamebar UI (credits to @dylanlanigansmith)</li>
-          <li>- Change flags to enable VA-API (credits to @sunshineinabox)</li>
+          <li>Improve silent token authentication and fix region selector not being active during SilentFlow (credits to @chefranov) #1458 #1199 #1119</li>
+          <li>Fix a possible use case where the user tokens has been expired which caused a non-ending loop of the authentication.</li>
+          <li>Fix xCloud loop when loading games because it fails due to change in library size. #1464 #1465</li>
+        </ul>
+     </description>
+    </release>
+    <release version="2.3.3" date="2025-04-11">
+     <description>
+        <ul>
+          <li>Add a stream volume control slider to the Gamebar UI (credits to @dylanlanigansmith)</li>
+          <li>Change flags to enable VA-API (credits to @sunshineinabox)</li>
         </ul>
      </description>
     </release>

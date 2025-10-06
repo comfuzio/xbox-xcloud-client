@@ -40,7 +40,7 @@
     "xbox-xcloud-player": "^0.2.11",
     "xvfb-maybe": "^0.2.1",
     "@types/i18next": "^12.1.0",
-    "@types/react-i18next": "^7.8.3",
+    "@types/react-i18next": "^8.1.0",
     "i18next": "^25.5.2",
     "react-i18next": "^16.0.0"
   },

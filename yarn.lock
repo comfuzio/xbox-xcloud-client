@@ -1281,10 +1281,10 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.10.tgz#a2a1e3812d14525f725d011a73eceb41fef5bc1c"
   integrity sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==
 
-"@formatjs/intl-localematcher@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@formatjs/intl-localematcher/-/intl-localematcher-0.6.1.tgz#25dc30675320bf65a9d7f73876fc1e4064c0e299"
-  integrity sha512-ePEgLgVCqi2BBFnTMWPfIghu6FkbZnnBVhO2sSxvLfrdFw7wCHAHiDoM2h4NRgjbaY7+B7HgOLZGkK187pZTZg==
+"@formatjs/intl-localematcher@^0.6.2":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@formatjs/intl-localematcher/-/intl-localematcher-0.6.2.tgz#e9ebe0b4082d7d48e5b2d753579fb7ece4eaefea"
+  integrity sha512-XOMO2Hupl0wdd172Y06h6kLpBz6Dv+J4okPLl4LPtzbr8f66WbIoy4ev98EBuZ6ZK4h5ydTN6XneT4QVpD7cdA==
   dependencies:
     tslib "^2.8.0"
 
@@ -5280,12 +5280,12 @@ fsevents@~2.3.3:
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.3.tgz#cac6407785d03675a2a5e1a5305c697b347d90d6"
   integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
 
-fumadocs-core@15.8.3, fumadocs-core@^15.8.3:
-  version "15.8.3"
-  resolved "https://registry.yarnpkg.com/fumadocs-core/-/fumadocs-core-15.8.3.tgz#bf9dd7cec5fb540fc3858c00d42c98b879159a9b"
-  integrity sha512-33ZqR7PYbBRhMsVfe5/PAc+Kq+QX+r4UiIVDmQNltf50vVDsl8rhA5jy+4ZJSt2iBhJJNZDyocfXiPGNO+tS3g==
+fumadocs-core@15.8.5, fumadocs-core@^15.8.5:
+  version "15.8.5"
+  resolved "https://registry.yarnpkg.com/fumadocs-core/-/fumadocs-core-15.8.5.tgz#a48fa0e70cddb6e3d1227d55035db6ec71580308"
+  integrity sha512-hyJtKGuB2J/5y7tDfI1EnGMKlNbSXM5N5cpwvgCY0DcBJwFMDG/GpSpaVRzh3aWy67pAYDZFIwdtbKXBa/q5bg==
   dependencies:
-    "@formatjs/intl-localematcher" "^0.6.1"
+    "@formatjs/intl-localematcher" "^0.6.2"
     "@orama/orama" "^3.1.14"
     "@shikijs/rehype" "^3.13.0"
     "@shikijs/transformers" "^3.13.0"
@@ -5297,17 +5297,17 @@ fumadocs-core@15.8.3, fumadocs-core@^15.8.3:
     npm-to-yarn "^3.0.1"
     path-to-regexp "^8.3.0"
     react-remove-scroll "^2.7.1"
-    remark "^15.0.0"
+    remark "^15.0.1"
     remark-gfm "^4.0.1"
     remark-rehype "^11.1.2"
     scroll-into-view-if-needed "^3.1.0"
     shiki "^3.13.0"
     unist-util-visit "^5.0.0"
 
-fumadocs-mdx@^12.0.2:
-  version "12.0.2"
-  resolved "https://registry.yarnpkg.com/fumadocs-mdx/-/fumadocs-mdx-12.0.2.tgz#5663e4d653405937b21132fe5688b6dfa77e4249"
-  integrity sha512-Lf85+p2HuyBEGYFsh4l57P8BTHU6/VOO5Cq7zVo7l7GIbPN5x3GDOFPX/D+h/4kIRny8Dml8SCy0yerAqi3Ebw==
+fumadocs-mdx@^12.0.3:
+  version "12.0.3"
+  resolved "https://registry.yarnpkg.com/fumadocs-mdx/-/fumadocs-mdx-12.0.3.tgz#a48b97673f828a65cfb7edb877d3598992ad5799"
+  integrity sha512-OYqbHSmzkejG+iUMlZJJOitaVbCgBdo/REc/9Sq1WaZ1vq6bH9PCFU0cKJlRdHbQSGRfVg5EJJy5uKy5+iNFGQ==
   dependencies:
     "@mdx-js/mdx" "^3.1.1"
     "@standard-schema/spec" "^1.0.0"
@@ -5340,10 +5340,10 @@ fumadocs-typescript@^4.0.11:
     ts-morph "^27.0.0"
     unist-util-visit "^5.0.0"
 
-fumadocs-ui@^15.8.3:
-  version "15.8.3"
-  resolved "https://registry.yarnpkg.com/fumadocs-ui/-/fumadocs-ui-15.8.3.tgz#70fd3e923872120ea124aeb351d167f04c560c4e"
-  integrity sha512-KJcbOSu28shZ330R+F+Zgvbl5ehZlA+heB171x2eZJpy0JY9ihJGi9fXk5IIbcwaz4okKM/YPOY3K7THvRO1Kw==
+fumadocs-ui@^15.8.5:
+  version "15.8.5"
+  resolved "https://registry.yarnpkg.com/fumadocs-ui/-/fumadocs-ui-15.8.5.tgz#d5ba09b16de9f21b2a5df20c7da7d2542580b671"
+  integrity sha512-9pyB+9rOOsrFnmmZ9xREp/OgVhyaSq2ocEpqTNbeQ7tlJ6JWbdFWfW0C9lRXprQEB6DJWUDtDxqKS5QXLH0EGA==
   dependencies:
     "@radix-ui/react-accordion" "^1.2.12"
     "@radix-ui/react-collapsible" "^1.1.12"
@@ -5356,7 +5356,7 @@ fumadocs-ui@^15.8.3:
     "@radix-ui/react-slot" "^1.2.3"
     "@radix-ui/react-tabs" "^1.1.13"
     class-variance-authority "^0.7.1"
-    fumadocs-core "15.8.3"
+    fumadocs-core "15.8.5"
     lodash.merge "^4.6.2"
     next-themes "^0.4.6"
     postcss-selector-parser "^7.1.0"
@@ -8436,7 +8436,7 @@ remark-stringify@^11.0.0:
     mdast-util-to-markdown "^2.0.0"
     unified "^11.0.0"
 
-remark@^15.0.0, remark@^15.0.1:
+remark@^15.0.1:
   version "15.0.1"
   resolved "https://registry.yarnpkg.com/remark/-/remark-15.0.1.tgz#ac7e7563260513b66426bc47f850e7aa5862c37c"
   integrity sha512-Eht5w30ruCXgFmxVUSlNWQ9iiimq07URKeFS3hNc8cUWy1llX4KDWfyEDZRycMc+znsN9Ux5/tJ/BFdgdOwA3A==

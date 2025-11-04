@@ -9,9 +9,8 @@ export default class IpcConsoles extends IpcBase {
     get(){
         return new Promise((resolve, reject) => {
             if(this._consolesLastUpdate < Date.now() - 60*1000){
-                // this._application._events._webApi.getProvider('smartglass').getConsolesList().then((consoles) => {
-                this._application._webApi.getProvider('smartglass').getConsolesList().then((consoles) => {
-                    this._consoles = consoles.result
+                this._application._webApi.providers.smartglass.getConsolesList().then((consoles) => {
+                    this._consoles = consoles.data.result
                     this._consolesLastUpdate = Date.now()
 
                     resolve(this._consoles)

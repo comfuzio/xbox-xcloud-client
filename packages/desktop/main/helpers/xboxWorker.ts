@@ -41,9 +41,9 @@ export default class xboxWorker {
 
     updateFriends(){
         return new Promise((resolve, reject) => {
-            this._application._webApi.getProvider('people').getFriends().then((friends) => {
-                for(const friend in friends.people){
-                    this._friends[friends.people[friend].xuid] = friends.people[friend]
+            this._application._webApi.providers.people.getFriends().then((friends) => {
+                for(const friend in friends.data.people){
+                    this._friends[friends.data.people[friend].xuid] = friends.data.people[friend]
                 }
 
                 resolve(this._friends)

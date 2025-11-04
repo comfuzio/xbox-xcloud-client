@@ -170,25 +170,25 @@ export default class Application {
         }
 
         this._webApi = new xboxWebApi({
-            userToken: webToken.data.Token,
+            token: webToken.data.Token,
             uhs: webToken.data.DisplayClaims.xui[0].uhs,
         })
 
         this._authentication._isAuthenticating = false
         this._authentication._isAuthenticated = true
 
-        this._webApi.getProvider('profile').get('/users/me/profile/settings?settings=GameDisplayName,GameDisplayPicRaw,Gamerscore,Gamertag').then((result) => {
-            if(result.profileUsers.length > 0) {
-                for(const setting in result.profileUsers[0].settings){
+        this._webApi.providers.profile.get('/users/me/profile/settings?settings=GameDisplayName,GameDisplayPicRaw,Gamerscore,Gamertag').then((result) => {
+            if(result.data.profileUsers.length > 0) {
+                for(const setting in result.data.profileUsers[0].settings){
 
-                    if(result.profileUsers[0].settings[setting].id === 'Gamertag'){
-                        this._store.set('user.gamertag', result.profileUsers[0].settings[setting].value)
+                    if(result.data.profileUsers[0].settings[setting].id === 'Gamertag'){
+                        this._store.set('user.gamertag', result.data.profileUsers[0].settings[setting].value)
 
-                    } else if(result.profileUsers[0].settings[setting].id === 'GameDisplayPicRaw'){
-                        this._store.set('user.gamerpic', result.profileUsers[0].settings[setting].value)
+                    } else if(result.data.profileUsers[0].settings[setting].id === 'GameDisplayPicRaw'){
+                        this._store.set('user.gamerpic', result.data.profileUsers[0].settings[setting].value)
 
-                    } else if(result.profileUsers[0].settings[setting].id === 'Gamerscore'){
-                        this._store.set('user.gamerscore', result.profileUsers[0].settings[setting].value)
+                    } else if(result.data.profileUsers[0].settings[setting].id === 'Gamerscore'){
+                        this._store.set('user.gamerscore', result.data.profileUsers[0].settings[setting].value)
                     }
                 }
             }

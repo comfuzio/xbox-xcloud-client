@@ -60,7 +60,7 @@ function StreamPreload({
     }
 
     function endStream(){
-        if(confirm(t('streamWindow.endStreamConfirmation'))){
+        if(confirm(t('streamWindow.endStreamConfirmMessage'))){
             onDisconnect()
             window.history.back()
         }

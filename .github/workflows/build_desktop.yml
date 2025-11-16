@@ -142,8 +142,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: [cachedeps]
 
+    strategy:
+      matrix:
+        env: ['freedesktop-24.08', 'freedesktop-24.08-aarch64']
+
     container:
-      image: bilelmoussaoui/flatpak-github-actions:freedesktop-24.08
+      image: bilelmoussaoui/flatpak-github-actions:${{ matrix.env }}
       options: --privileged
 
     steps:

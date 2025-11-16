@@ -139,11 +139,16 @@ jobs:
 
   flatpak:
     name: Flatpak Build
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     needs: [cachedeps]
 
+    strategy:
+      matrix:
+        # os: ['ubuntu-latest', 'ubuntu-24.04-arm']
+        os: ['ubuntu-latest']
+
     container:
-      image: bilelmoussaoui/flatpak-github-actions:gnome-45
+      image: bilelmoussaoui/flatpak-github-actions:freedesktop-24.08
       options: --privileged
 
     steps:

@@ -7,6 +7,7 @@ description: Changelogs
 
 ## v2.4.0 - Unreleased
 - Implement localization support for EN/RU/UA (huge thanks to @chefranov) #1468
+- Updated dependencies to optimise performance
 
 ## v2.3.3 - 2025-09-20
 - Improve silent token authentication and fix region selector not being active during SilentFlow (credits to @chefranov) #1458 #1199 #1119

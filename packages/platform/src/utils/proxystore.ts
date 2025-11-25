@@ -5,9 +5,9 @@ export default class ProxyStore extends TokenStore {
 
     constructor(token?: IUserToken) {
         super()
-
+        
         if(token !== undefined)
-            this._userToken = new UserToken(token)
+            this._userToken = new ((UserToken as any).default || UserToken)(token)
     }
  
     load() {

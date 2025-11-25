@@ -28,15 +28,36 @@ const zodXhomeToken = z.object({
   region: z.string(),
 })
 
+const zodUserToken = z.object({
+  token_type: z.string(),
+  scope: z.string(),
+  expires_in: z.number(),
+  ext_expires_in: z.number(),
+  access_token: z.string(),
+  refresh_token: z.string(),
+  id_token: z.string(),
+})
+
+interface IDeviceCodeVerify {
+    access_token: string
+    expires_in: number
+    ext_expires_in: number
+    id_token: string
+    refresh_token: string
+    scope: string
+    token_type: string
+}
+
 export const appRouter = router({
     ping: publicProcedure.query(() => 'pong'),
     version: publicProcedure.query(() => version),
     echo: publicProcedure.input(z.string()).query(({ input }) => `echo: ${input}`),
 
     auth_msal_start: publicProcedure.query(async () => await auth.startMsalAuth()),
-    auth_msal_verify: publicProcedure.input(z.string()).query(async ({ input }) => await auth.verifyDeviceCode(input)),
-    auth_get_streamingtokens: publicProcedure.input(z.string()).query(async ({ input }) => await auth.getStreamingTokens(input)),
-    auth_get_webtoken: publicProcedure.input(z.string()).query(async ({ input }) => await auth.getWebToken(input)),
+    auth_msal_verify: publicProcedure.input(z.string()).query(async ({ input }) => (await auth.verifyDeviceCode(input)) as IDeviceCodeVerify),
+    auth_msal_refresh: publicProcedure.input(zodUserToken).query(async ({ input }) => await auth.refreshUserToken(input)),
+    auth_get_streamingtokens: publicProcedure.input(zodUserToken).query(async ({ input }) => await auth.getStreamingTokens(input)),
+    auth_get_webtoken: publicProcedure.input(zodUserToken).query(async ({ input }) => await auth.getWebToken(input)),
 
     profile_get_current: publicProcedure.input(z.object({ token: zodWebToken })).query(async ({ input }) => await profile.getCurrentProfile(input.token)),
 

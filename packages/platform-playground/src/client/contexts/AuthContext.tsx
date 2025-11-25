@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             
             setAuthState({
               userToken,
-              webToken: webToken.data,
+              webToken: webToken,
               streamingTokens,
             });
             

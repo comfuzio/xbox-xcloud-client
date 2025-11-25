@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 
-export function Menu() {
-  const [filter, setFilter] = useState('');
+export function Menu({ setCurrentPage }: { setCurrentPage: (page: string) => void }) {
+  const { isAuthenticated } = useAuth();
+
 
   return (
     <>
@@ -13,7 +15,7 @@ export function Menu() {
                     <button
                         key="auth_login"
                         className="procedure-item"
-                        onClick={() => { console.log('Auth Login clicked'); }}
+                        onClick={() => { setCurrentPage('auth'); }}
                     >
                         <span className="procedure-name">auth</span>
                         <span className={`procedure-type query`}>auth</span>
@@ -23,23 +25,23 @@ export function Menu() {
             </div>
         </div>
 
-        <div className="procedure-menu">
+        { isAuthenticated &&<div className="procedure-menu">
             <div className="procedure-list">
 
                 <div key="auth" className="procedure-category">
-                    <h3>Auth</h3>
+                    <h3>Profile</h3>
                     <button
-                        key="auth_login"
+                        key="profile_get"
                         className="procedure-item"
-                        onClick={() => { console.log('Auth Login clicked'); }}
+                        onClick={() => { setCurrentPage('profile'); }}
                     >
-                        <span className="procedure-name">auth</span>
-                        <span className={`procedure-type query`}>auth</span>
+                        <span className="procedure-name">profile_get_current</span>
+                        <span className={`procedure-type query`}>Query</span>
                     </button>
                 </div>
 
             </div>
-        </div>
+        </div> }
     </>
   );
 }

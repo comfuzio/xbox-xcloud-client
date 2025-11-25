@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { useQueryClient } from "@tanstack/react-query";
-import { useTRPC, RouterOutputs } from "../utils/trpc";
+import { useTRPC } from "../utils/trpc";
 
 export function QueryPage({ method, title, sendData, fields }: { method: string; title: string, sendData: any, fields?: Record<string, any> }) {
     const trpc = useTRPC();

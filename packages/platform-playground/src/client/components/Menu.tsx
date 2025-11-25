@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 export function Menu({ setCurrentPage }: { setCurrentPage: (page: string) => void }) {

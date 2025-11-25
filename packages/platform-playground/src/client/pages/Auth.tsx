@@ -1,13 +1,10 @@
 // import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useTRPC, RouterOutputs } from "../utils/trpc";
+import { RouterOutputs } from "../utils/trpc";
 import { useState } from "react";
 
 export function AuthPage() {
-    const trpc = useTRPC();
-    const queryClient = useQueryClient();
     const { isAuthenticated, isAuthenticating, startAuth, verifyCode, logout, authState } = useAuth();
     const [authFlow, setAuthFlow] = useState<RouterOutputs["auth_msal_start"] | undefined>(undefined);
 

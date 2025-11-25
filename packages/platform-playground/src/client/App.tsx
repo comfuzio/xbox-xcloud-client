@@ -7,7 +7,7 @@ import { QueryPage } from './pages/Query';
 import { useAuth } from './contexts/AuthContext';
 
 function App() {
-  const { getWebToken, getxHomeToken, getxCloudToken } = useAuth();
+  const { getWebToken, getxCloudToken } = useAuth();
   const [currentpage, setCurrentpage] = useState('auth');
 
   const renderPage = () => {

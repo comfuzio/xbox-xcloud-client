@@ -1,0 +1,55 @@
+{
+  "name": "@greenlight/player",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:client": "vite build",
+    "build:server": "tsup",
+    "build:types": "tsc --project tsconfig.types.json",
+    "build": "yarn clean && yarn build:types && yarn build:client && yarn build:server",
+    "clean": "rm -rf dist/",
+    "test": "mocha",
+    "dev": "concurrently \"yarn dev:client\" \"yarn dev:server\"",
+    "dev:client": "vite build --watch",
+    "dev:server": "tsup --watch"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^5.2.2",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.14.1",
+    "@types/react": "^18.3.12",
+    "@types/sinon": "^17.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "chai": "^5.2.0",
+    "mocha": "^11.1.0",
+    "react": "^18.3.1",
+    "sinon": "^19.0.2",
+    "tsup": "^8.5.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.11",
+    "vite-plugin-dts": "^4.5.4"
+  }
+}

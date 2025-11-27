@@ -3,6 +3,7 @@ import { Menu } from './components/Menu';
 
 import { AuthPage } from './pages/Auth';
 import { QueryPage } from './pages/Query';
+import { PlayerPage } from './pages/Player'
 
 import { useAuth } from './contexts/AuthContext';
 
@@ -70,6 +71,10 @@ function App() {
                 fields={{
                   productId: 'BX3M8L83BBRW'
                 }} />;
+      
+      
+      case 'player':
+        return <PlayerPage />;
       default:
         return <AuthPage />;
     }

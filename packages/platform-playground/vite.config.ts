@@ -10,6 +10,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@greenlight/platform': path.resolve(__dirname, '../platform/dist/src/index.js'),
+      '@greenlight/player': path.resolve(__dirname, '../player/dist/'),
     },
   },
   build: {

@@ -23,7 +23,7 @@ export function Menu({ setCurrentPage }: { setCurrentPage: (page: string) => voi
             </div>
         </div>
 
-        { isAuthenticated &&<div className="procedure-menu">
+        { isAuthenticated && <div className="procedure-menu">
             <div className="procedure-list">
 
                 <div key="auth" className="procedure-category">
@@ -108,6 +108,21 @@ export function Menu({ setCurrentPage }: { setCurrentPage: (page: string) => voi
                 </div>
 
             </div>
+        </div> }
+
+        { isAuthenticated && <div className="procedure-menu">
+
+            <div key="player" className="procedure-category">
+                <h3>Player</h3>
+                <button
+                    key="player"
+                    className="procedure-item"
+                    onClick={() => { setCurrentPage('player'); }}
+                >
+                    <span className="procedure-name">Open player</span>
+                </button>
+            </div>
+
         </div> }
     </>
   );

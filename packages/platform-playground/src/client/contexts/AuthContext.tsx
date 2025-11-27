@@ -66,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             console.error('Failed to fetch tokens:', error);
 
             // Check if we can refresh the tokens
-            const refreshedToken = await queryClient.fetchQuery(trpc.auth_msal_refresh.queryOptions(userToken.refresh_token))
+            // const refreshedToken = await queryClient.fetchQuery(trpc.auth_msal_refresh.queryOptions(userToken.refresh_token))
 
             // Clear invalid userToken only on auth failure
             // localStorage.removeItem('userToken');

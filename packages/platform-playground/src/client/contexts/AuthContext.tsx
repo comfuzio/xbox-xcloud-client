@@ -8,8 +8,8 @@ interface AuthContextType {
   verifyCode: (code: string) => Promise<RouterOutputs["auth_msal_verify"] | undefined>;
   logout: () => void;
   getWebToken: () => { uhs: string; token: string };
-  getxHomeToken: () => { market: string; region: string; token: string };
-  getxCloudToken: () => { market: string; region: string; token: string };
+  getxHomeToken: () => { market: string; language: string; token: string };
+  getxCloudToken: () => { market: string; language: string; token: string };
   authState?: {
     userToken: RouterOutputs["auth_msal_verify"] | null;
     webToken: RouterOutputs["auth_get_webtoken"] | null;
@@ -143,6 +143,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('userToken');
   };
 
+  const getBrowserLanguage = () => {
+    const primaryLang = navigator.languages?.[0]?.split('-')[0] || 'en';
+    const regionalVariant = navigator.languages?.find(lang => 
+      lang.toLowerCase().startsWith(primaryLang + '-')
+    )?.toLowerCase() || `${primaryLang}-us`;
+
+    return regionalVariant
+  }
+
   const getWebToken = () => {
     return {
       uhs: authState?.webToken?.data.DisplayClaims?.xui[0]?.uhs || '', // @TODO: Fix typing
@@ -153,7 +162,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const getxHomeToken = () => {
     return {
       market: authState.streamingTokens?.xHomeToken?.data.market || '',
-      region: authState.streamingTokens?.xHomeToken?.data.region || 'N/A',
+      language: getBrowserLanguage() || 'en-us',
       token: authState.streamingTokens?.xHomeToken?.data.gsToken || '',
     }
   }
@@ -161,7 +170,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const getxCloudToken = () => {
     return {
       market: authState.streamingTokens?.xCloudToken?.data.market || '',
-      region: authState.streamingTokens?.xCloudToken?.data.region || 'N/A',
+      language: getBrowserLanguage() || 'en-us',
       token: authState.streamingTokens?.xCloudToken?.data.gsToken || '',
     }
   }

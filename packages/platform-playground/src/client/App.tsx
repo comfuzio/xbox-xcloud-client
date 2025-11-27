@@ -20,12 +20,20 @@ function App() {
                 method="profile_get_current"
                 title="Profile: Get Current"
                 sendData={getWebToken()} />;
+      case 'profile_get_friends':
+        return <QueryPage
+                key="profile_get_friends"
+                method="profile_get_friends"
+                title="Profile: Get Friends"
+                sendData={getWebToken()} />;
+
       case 'smartglass_consoles_list':
         return <QueryPage
                 key="smartglass_consoles_list"
                 method="smartglass_consoles_list"
                 title="Smartglass: Consoles List"
                 sendData={getWebToken()} />;
+
       case 'gamepass_get_titles':
         return <QueryPage
                 key="gamepass_get_titles"
@@ -37,6 +45,12 @@ function App() {
                 key="gamepass_get_recent_titles"
                 method="gamepass_get_recent_titles"
                 title="Gamepass: Get Recent Titles"
+                sendData={getxCloudToken()} />;
+      case 'gamepass_get_new_titles':
+        return <QueryPage
+                key="gamepass_get_new_titles"
+                method="gamepass_get_new_titles"
+                title="Gamepass: Get New Titles"
                 sendData={getxCloudToken()} />;
       case 'gamepass_batch_productids':
         return <QueryPage

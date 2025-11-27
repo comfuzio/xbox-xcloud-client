@@ -3,7 +3,6 @@ import { useAuth } from '../contexts/AuthContext';
 export function Menu({ setCurrentPage }: { setCurrentPage: (page: string) => void }) {
   const { isAuthenticated } = useAuth();
 
-
   return (
     <>
         <div className="procedure-menu">
@@ -37,6 +36,15 @@ export function Menu({ setCurrentPage }: { setCurrentPage: (page: string) => voi
                         <span className="procedure-name">profile_get_current</span>
                         <span className={`procedure-type query`}>Query</span>
                     </button>
+                    
+                    <button
+                        key="profile_get_friends"
+                        className="procedure-item"
+                        onClick={() => { setCurrentPage('profile_get_friends'); }}
+                    >
+                        <span className="procedure-name">profile_get_friends</span>
+                        <span className={`procedure-type query`}>Query</span>
+                    </button>
                 </div>
 
                 <div key="smartglass" className="procedure-category">
@@ -68,6 +76,15 @@ export function Menu({ setCurrentPage }: { setCurrentPage: (page: string) => voi
                         onClick={() => { setCurrentPage('gamepass_get_recent_titles'); }}
                     >
                         <span className="procedure-name">gamepass_get_recent_titles</span>
+                        <span className={`procedure-type query`}>Query</span>
+                    </button>
+
+                    <button
+                        key="gamepass_get_new_titles"
+                        className="procedure-item"
+                        onClick={() => { setCurrentPage('gamepass_get_new_titles'); }}
+                    >
+                        <span className="procedure-name">gamepass_get_new_titles</span>
                         <span className={`procedure-type query`}>Query</span>
                     </button>
 

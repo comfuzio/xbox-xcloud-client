@@ -1,4 +1,5 @@
 import { StreamPlayer } from '@greenlight/player/client';
+import '@greenlight/player/style.css';
 
 // import { useState } from 'react';
 
@@ -9,7 +10,7 @@ export function PlayerPage() {
     // const trpc = useTRPC();
     // const queryClient = useQueryClient();
 
-    console.log('Stramplayer:', StreamPlayer);
+    console.log('Streamplayer:', StreamPlayer);
 
     return (
         <>

@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import * as trpcExpress from '@trpc/server/adapters/express';
-import { appRouter } from '@greenlight/platform/src/trpc';
+import { appRouter } from '@greenlight/platform';
 
 const PORT = process.env.PORT || 3000;
 

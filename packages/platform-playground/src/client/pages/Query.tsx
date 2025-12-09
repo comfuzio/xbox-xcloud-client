@@ -68,14 +68,13 @@ export function QueryPage({ method, title, sendData, fields }: { method: string;
             <div className="card">
                 <h2>Result</h2>
 
-                    <div className="tokens-section">
-                        <div>
-                            <div className="result-section">
-                                <pre>{ result ? JSON.stringify(result, null, 2) : "No action performed yet"}</pre>
-                            </div>
+                <div className="tokens-section">
+                    <div>
+                        <div className="result-section">
+                            <pre>{ result ? JSON.stringify(result, null, 2) : "No action performed yet"}</pre>
                         </div>
                     </div>
-                
+                </div>
             </div>
         </>
     );

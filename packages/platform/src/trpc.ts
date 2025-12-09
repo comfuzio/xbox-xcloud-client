@@ -8,7 +8,7 @@ import profileController from './controller/profile.js';
 import smartglassController from './controller/smartglass.js';
 import gamepassController from './controller/gamepass.js';
 
-import { ping } from '@greenlight/player/server'
+import { startStream } from '@greenlight/player/server'
 
 const t = initTRPC.create();
 export const router = t.router;
@@ -40,6 +40,14 @@ const zodUserToken = z.object({
   id_token: z.string(),
 })
 
+const xCloudStreamConfig = z.object({
+    id: z.string(),
+    type: z.enum(['home', 'cloud']),
+    language: z.string(),
+    host: z.string(),
+    resolution: z.union([z.literal(720), z.literal(1080)])
+})
+
 export const appRouter = router({
     ping: publicProcedure.query(() => 'pong'),
     version: publicProcedure.query(() => version),
@@ -63,7 +71,7 @@ export const appRouter = router({
     gamepass_batch_productids: publicProcedure.input(z.object({ token: zodXhomeToken, productIds: z.array(z.string()) })).query(async ({ input }) => await gamepass.resolveTitles(input.token, input.productIds)),
     gamepass_resolve_productid: publicProcedure.input(z.object({ token: zodXhomeToken, productId: z.string() })).query(async ({ input }) => await gamepass.resolveTitle(input.token, input.productId)),
 
-    player_ping: publicProcedure.query(() => ping()),
+    streaming_start_stream: publicProcedure.input(z.object({ token: zodXhomeToken, xCloudStreamConfig: xCloudStreamConfig })).query(async ({ input }) => await startStream(input.token, input.xCloudStreamConfig)),
 });
 
 export default appRouter;

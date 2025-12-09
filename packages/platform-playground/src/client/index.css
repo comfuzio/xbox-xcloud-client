@@ -103,6 +103,12 @@ button:disabled {
   cursor: not-allowed;
 }
 
+button.inline {
+  width: auto;
+  padding: 0.6em 1.2em;
+  margin: 0.5rem;
+}
+
 .card {
   padding: 2em;
   background-color: #1a1a1a;
@@ -333,4 +339,8 @@ button:disabled {
   font-size: 0.85em;
   line-height: 1.5;
   max-width: 100%;
+}
+
+ul {
+  list-style-type: none;
 }

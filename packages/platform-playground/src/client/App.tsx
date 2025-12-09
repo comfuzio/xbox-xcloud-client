@@ -6,6 +6,7 @@ import { QueryPage } from './pages/Query';
 import { PlayerPage } from './pages/Player'
 
 import { useAuth } from './contexts/AuthContext';
+import { type xCloudStreamConfig } from '@greenlight/player/client';
 
 function App() {
   const { getWebToken, getxCloudToken } = useAuth();
@@ -71,6 +72,20 @@ function App() {
                 fields={{
                   productId: 'BX3M8L83BBRW'
                 }} />;
+
+      case 'streaming_start_stream':
+        return <QueryPage
+                key="streaming_start_stream"
+                method="streaming_start_stream"
+                title="Streaming: Start Stream"
+                sendData={{ token: getxCloudToken(), xCloudStreamConfig: ':xCloudStreamConfig' }}
+                fields={{ xCloudStreamConfig: JSON.stringify({
+                  id: 'YOUR_CONSOLE_ID',
+                  type: 'home',
+                  language: 'en-US',
+                  host: 'https://uks.core.gssv-play-prodxhome.xboxlive.com',
+                  resolution: 1080,
+                })}} />;
       
       
       case 'player':

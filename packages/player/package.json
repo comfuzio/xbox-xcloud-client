@@ -11,10 +11,6 @@
     "./server": {
       "types": "./dist/server.d.ts",
       "import": "./dist/server.js"
-    },
-    "./types": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/types/index.js"
     }
   },
   "files": [
@@ -23,8 +19,7 @@
   "scripts": {
     "build:client": "vite build",
     "build:server": "tsup",
-    "build:types": "tsc --project tsconfig.types.json",
-    "build": "yarn clean && yarn build:types && yarn build:client && yarn build:server",
+    "build": "yarn clean && yarn build:client && yarn build:server",
     "clean": "rm -rf dist/",
     "test": "mocha",
     "dev": "concurrently \"yarn dev:server\" \"yarn dev:client\"",

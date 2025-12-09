@@ -107,6 +107,18 @@ export function Menu({ setCurrentPage }: { setCurrentPage: (page: string) => voi
                     </button>
                 </div>
 
+                <div key="streaming" className="procedure-category">
+                    <h3>Streaming</h3>
+                    <button
+                        key="streaming_start_stream"
+                        className="procedure-item"
+                        onClick={() => { setCurrentPage('streaming_start_stream'); }}
+                    >
+                        <span className="procedure-name">streaming_start_stream</span>
+                        <span className={`procedure-type query`}>Query</span>
+                    </button>
+                </div>
+
             </div>
         </div> }
 

@@ -62,6 +62,14 @@ export default class Authentication {
         this._application.log('authenticationV2', '[startSilentFlow()] Starting silent flow...')
         this._isAuthenticating = true
 
+        const forceRegionIp = this._application._store.get('force_region_ip', '')
+        if (forceRegionIp && typeof forceRegionIp === 'string' && forceRegionIp.trim() !== '') {
+            this._msal.setDefaultHeaders({ 'X-Forwarded-For': forceRegionIp.trim() })
+            this._application.log('authenticationV2', '[startSilentFlow()] Using X-Forwarded-For:', forceRegionIp)
+        } else {
+            this._msal.setDefaultHeaders({})
+        }
+
         this.getTokens()
     }
 
@@ -101,6 +109,14 @@ export default class Authentication {
 
     startAuthflow(){
         this._application.log('authenticationV2', '[startAuthflow()] Starting authentication flow')
+
+        const forceRegionIp = this._application._store.get('force_region_ip', '')
+        if (forceRegionIp && typeof forceRegionIp === 'string' && forceRegionIp.trim() !== '') {
+            this._msal.setDefaultHeaders({ 'X-Forwarded-For': forceRegionIp.trim() })
+            this._application.log('authenticationV2', '[startSilentFlow()] Using X-Forwarded-For:', forceRegionIp)
+        } else {
+            this._msal.setDefaultHeaders({})
+        }
 
         this._msal.doDeviceCodeAuth().then((data) => {
             this._application.log('authenticationV2', '[startAuthflow()] Starting devicecode auth:', data)

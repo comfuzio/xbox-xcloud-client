@@ -27,7 +27,7 @@ on:
         type: boolean
       
 env:
-  node_version: 22
+  node_version: 24
   reset_cache: ${{ inputs.reset_cache || false }}
 
 jobs:

@@ -1,5 +1,5 @@
 import { StreamPlayer, xCloudStreamConfig } from '@greenlight/player/client';
-import '@greenlight/player/style.css';
+// import '@greenlight/player/style.css';
 // import type { xCloudStreamConfig } from '@greenlight/player/server';
 
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";

@@ -167,10 +167,6 @@ jobs:
         with:
           node-version: ${{ env.node_version }}
 
-      free-disk-space:
-    runs-on: ubuntu-latest
-    steps:
-
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@main
         with:

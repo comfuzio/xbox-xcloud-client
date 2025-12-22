@@ -57,7 +57,7 @@
     "electron": "39.2.7",
     "electron-builder": "^26.0.12",
     "eslint": "^9.39.2",
-    "next": "^16.0.10",
+    "next": "^16.1.0",
     "nextron": "^9.5.0",
     "node-loader": "^2.1.0",
     "react": "^19.2.3",

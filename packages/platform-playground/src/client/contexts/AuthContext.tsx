@@ -10,6 +10,7 @@ interface AuthContextType {
   getWebToken: () => { uhs: string; token: string };
   getxHomeToken: () => { market: string; language: string; token: string };
   getxCloudToken: () => { market: string; language: string; token: string };
+  getUserRefreshToken: () => string | undefined;
   authState?: {
     userToken: RouterOutputs["auth_msal_verify"] | null;
     webToken: RouterOutputs["auth_get_webtoken"] | null;
@@ -175,6 +176,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  const getUserRefreshToken = () => {
+    return authState.userToken?.refresh_token;
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -187,6 +192,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         getWebToken,
         getxHomeToken,
         getxCloudToken,
+        getUserRefreshToken
       }}
     >
       {children}

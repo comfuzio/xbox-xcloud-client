@@ -12,7 +12,8 @@ import {
   startStream,
   getStreamStatus,
   sendSDPOffer,
-  sendICECandidates
+  sendICECandidates,
+  sendMsalToken
  } from '@greenlight/player/server'
 
 const t = initTRPC.create();
@@ -80,6 +81,7 @@ export const appRouter = router({
     streaming_get_status: publicProcedure.input(z.object({ token: zodXhomeToken, xCloudStreamConfig: xCloudStreamConfig, sessionPath: z.string() })).mutation(async ({ input }) => await getStreamStatus(input.token, input.xCloudStreamConfig, input.sessionPath)),
     streaming_send_sdp_offer: publicProcedure.input(z.object({ token: zodXhomeToken, xCloudStreamConfig: xCloudStreamConfig, sessionPath: z.string(), sdpOffer: z.any() })).mutation(async ({ input }) => await sendSDPOffer(input.token, input.xCloudStreamConfig, input.sessionPath, input.sdpOffer)),
     streaming_send_ice_candidates: publicProcedure.input(z.object({ token: zodXhomeToken, xCloudStreamConfig: xCloudStreamConfig, sessionPath: z.string(), candidates: z.array(z.any()) })).mutation(async ({ input }) => await sendICECandidates(input.token, input.xCloudStreamConfig, input.sessionPath, input.candidates)),
+    streaming_send_msal_token: publicProcedure.input(z.object({ token: zodXhomeToken, xCloudStreamConfig: xCloudStreamConfig, sessionPath: z.string(), refreshToken: z.string() })).mutation(async ({ input }) => await sendMsalToken(input.token, input.xCloudStreamConfig, input.sessionPath, input.refreshToken)),
 });
 
 export default appRouter;

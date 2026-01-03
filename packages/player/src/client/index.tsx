@@ -32,6 +32,7 @@ export interface communicationHandler {
     getStreamConfig: () => xCloudStreamConfig;
     sendSDPOffer: (sdpOffer:RTCSessionDescriptionInit) => Promise<any>;
     sendICECandidates: (candidates:Array<any>) => Promise<any>;
+    sendMSALToken: () => Promise<any>;
 }
 
 export const StreamPlayer = forwardRef<StreamPlayerHandle, StreamPlayerProps>(
@@ -97,6 +98,7 @@ export const StreamPlayer = forwardRef<StreamPlayerHandle, StreamPlayerProps>(
 
                             } else if(state.state === 'ReadyToConnect'){
                                 // Perform MSAL Auth, then refetch state and wait for Provisioned
+                                communicationHandler.sendMSALToken()
 
                             } else if(state.state === 'Failed'){
                                 clearInterval(interval)
@@ -156,6 +158,7 @@ export const StreamPlayer = forwardRef<StreamPlayerHandle, StreamPlayerProps>(
                     Player loaded from <span className='redPlayer'>@greenlight/player/client</span>
                 </p>
                 <pre>{JSON.stringify(communicationHandler.getStreamConfig(), null, 2)}</pre>
+                <pre>Status: {playerState}</pre>
             </div>
         );
     }

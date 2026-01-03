@@ -94,6 +94,27 @@ export const sendICECandidates = async (xStreamToken:xStreamToken, xCloudStreamC
     return iceResponse
 }
 
+export const sendMsalToken = async (xStreamToken:xStreamToken, xCloudStreamConfig:xCloudStreamConfig, sessionPath:string, userRefreshToken:string) => {
+    // Fetch token server sided
+    const tokenData = await fetch('https://login.live.com/oauth20_token.srf', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: '1f907974-e22b-4810-a9de-d9647380c97e',
+        scope: 'service::http://Passport.NET/purpose::PURPOSE_XBOX_CLOUD_CONSOLE_TRANSFER_TOKEN',
+        grant_type: 'refresh_token',
+        refresh_token: userRefreshToken,
+      }),
+    })
+    const token = await tokenData.json();
+
+    return await httpPost<StatusResponse>(xStreamToken, xCloudStreamConfig, '/'+sessionPath+'/connect', JSON.stringify({
+        userToken: token.access_token
+    }))
+}
+
 // const httpGet = (url, headers = {}){
 //     return new Promise((resolve, reject) => {
 //         const deviceInfo = this.getDeviceInfo()
@@ -144,11 +165,11 @@ const httpGet = <T>(xStreamToken:xStreamToken, xCloudStreamConfig:xCloudStreamCo
                         if(response.status >= 200 && response.status <= 299){
                             resolve({ status: response.status })
                         } else {
-                            resolve({ error: error })
+                            reject({ error: error })
                         }
                     })
                 } else {
-                    resolve({
+                    reject({
                         error: {
                             satus: response.status,
                             data: response
@@ -157,7 +178,7 @@ const httpGet = <T>(xStreamToken:xStreamToken, xCloudStreamConfig:xCloudStreamCo
                 }
             })
         } catch (error) {
-            resolve({ error: error } as ErrorResponse)
+            reject({ error: error } as ErrorResponse)
         }
     })
 }
@@ -186,20 +207,20 @@ const httpPost = <T>(xStreamToken:xStreamToken, xCloudStreamConfig:xCloudStreamC
                         if(response.status >= 200 && response.status <= 299){
                             resolve({ status: response.status })
                         } else {
-                            resolve({ error: error })
+                            reject({ error: error })
                         }
                     })
                 } else {
-                    resolve({
+                    reject({
                         error: {
                             satus: response.status,
-                            data: response
+                            data: response.body
                         }
                     } as ErrorResponse)
                 }
             })
         } catch (error) {
-            resolve({ error: error } as ErrorResponse)
+            reject({ error: error } as ErrorResponse)
         }
     })
 }

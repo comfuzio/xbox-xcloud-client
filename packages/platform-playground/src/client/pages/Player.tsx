@@ -10,7 +10,7 @@ import { useState, useRef } from 'react';
 
 export function PlayerPage() {
     const trpc = useTRPC();
-    const { authState, getWebToken, getxCloudToken, getxHomeToken } = useAuth();
+    const { authState, getWebToken, getxCloudToken, getxHomeToken, getUserRefreshToken } = useAuth();
 
     const consoles = useQuery(trpc.smartglass_consoles_list.queryOptions(getWebToken()));
     const [streamConfig, setStreamConfig] = useState<xCloudStreamConfig | undefined>(undefined);
@@ -20,22 +20,23 @@ export function PlayerPage() {
     const streamGetStatus = useMutation(trpc.streaming_get_status.mutationOptions());
     const streamSendSDPOffer = useMutation(trpc.streaming_send_sdp_offer.mutationOptions());
     const streamSendICECandidates = useMutation(trpc.streaming_send_ice_candidates.mutationOptions());
+    const streamSendMSALToken = useMutation(trpc.streaming_send_msal_token.mutationOptions());
 
     const streamPlayerRef = useRef<StreamPlayerHandle>(null);
 
-    const requestStream = async (id: string) => {
+    const requestStream = async (id: string, xCloud: boolean) => {
         console.log('Requesting stream player setup for console:', id);
         
         const config: xCloudStreamConfig = {
             id: id,
-            type: 'home',
+            type: xCloud ? 'cloud' : 'home',
             language: 'en-US',
-            host: 'https://uks.core.gssv-play-prodxhome.xboxlive.com',
+            host: xCloud ? 'https://uks.core.gssv-play-prod.xboxlive.com' : 'https://uks.core.gssv-play-prodxhome.xboxlive.com',
             resolution: 1080
         };
 
         const streamSession = await startStreamMutation.mutateAsync({
-            token: getxHomeToken(),
+            token: xCloud ? getxCloudToken() : getxHomeToken(),
             xCloudStreamConfig: config
         });
         console.log('Stream session started:', streamSession);
@@ -99,6 +100,20 @@ export function PlayerPage() {
                 candidates: candidates
             });
         }
+
+        async sendMSALToken() {
+            const token = await getUserRefreshToken()
+            if(token){
+                return await streamSendMSALToken.mutateAsync({
+                    token: this._token,
+                    xCloudStreamConfig: this._streamConfig,
+                    sessionPath: this._sessionPath,
+                    refreshToken: token
+                });
+            } else {
+                throw new Error('MSAL token is null');
+            }
+        }
     }
 
     return (
@@ -116,7 +131,7 @@ export function PlayerPage() {
                             <ul>
                                 { consoles.data.data.result.map((console) => (
                                     <li key={console.id}>
-                                        <button className="inline" onClick={ () => requestStream(console.id) }>Connect</button>
+                                        <button className="inline" onClick={ () => requestStream(console.id, false) }>Connect</button>
                                         <strong>{console.name}</strong> (ID: {console.id}, Type: {console.consoleType})
                                     </li>
                                 )) }
@@ -126,6 +141,10 @@ export function PlayerPage() {
                         ) }
                     </div>
                 ) }
+
+                <h2>xCloud</h2>
+                <input className="filter-input" type="text" readOnly value="HALOINFINITE" />
+                <button className="inline" onClick={ () => requestStream("HALOINFINITE", true) }>Connect</button>
             </div>
 
             { streamConfig && session && <div id="player-container" className="card">
@@ -133,7 +152,7 @@ export function PlayerPage() {
                 <StreamPlayer
                     ref={ streamPlayerRef }
                     onStatusChanged={ statusChanged }
-                    communicationHandler={ new communicationHandler(getxHomeToken(), streamConfig, session) } />
+                    communicationHandler={ new communicationHandler(streamConfig.type === "cloud" ? getxCloudToken() : getxHomeToken(), streamConfig, session) } />
 
                 {/* <button onClick={ () => {
                     if(streamPlayerRef.current){

@@ -22,12 +22,6 @@ export const startStream = async (xStreamToken:xStreamToken, xCloudStreamConfig:
         serverId: (xCloudStreamConfig.type === 'home') ? xCloudStreamConfig.id : '',
         fallbackRegionNames: [],
     }))
-
-    // return {
-    //     sessionId: 'example-session-id',
-    //     sessionPath: '/v5/sessions/cloud/play/example-session-id',
-    //     state: 'Provisioning'
-    // }
 }
 
 export const getStreamStatus = async (xStreamToken:xStreamToken, xCloudStreamConfig:xCloudStreamConfig, sessionPath:string) => {
@@ -115,32 +109,9 @@ export const sendMsalToken = async (xStreamToken:xStreamToken, xCloudStreamConfi
     }))
 }
 
-// const httpGet = (url, headers = {}){
-//     return new Promise((resolve, reject) => {
-//         const deviceInfo = this.getDeviceInfo()
-
-//         fetch(this.getBaseHost()+url, {
-//             headers: {
-//                 'Accept': 'application/json',
-//                 'Content-Type': 'application/json',
-//                 'X-Gssv-Client': 'XboxComBrowser',
-//                 'X-MS-Device-Info': deviceInfo,
-//                 ...(this._config.token !== '' ? { 'Authorization': 'Bearer '+this._config.token } : {}),
-//                 ...headers,
-//             },
-//         }).then(response => {
-//             response.json().then(data => {
-//                 resolve(data)
-//             }).catch((error) => {
-//                 if(response.status >= 200 && response.status <= 299){
-//                     resolve({ status: response.status })
-//                 } else {
-//                     reject({ error: error })
-//                 }
-//             })
-//         })
-//     })
-// }
+export const sendKeepalive = async (xStreamToken:xStreamToken, xCloudStreamConfig:xCloudStreamConfig, sessionPath:string) => {
+    return await httpPost<StatusResponse>(xStreamToken, xCloudStreamConfig, '/'+sessionPath+'/keepalive', JSON.stringify({}))
+}
 
 const httpGet = <T>(xStreamToken:xStreamToken, xCloudStreamConfig:xCloudStreamConfig, url:string, headers = {}) => {
     return new Promise<T | StatusResponse | ErrorResponse>((resolve, reject) => {

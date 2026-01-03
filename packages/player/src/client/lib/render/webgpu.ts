@@ -57,8 +57,8 @@ export default class WebGpuComponent {
 
                 // Sampler
                 const sampler = this._gpuDevice.createSampler({
-                    magFilter: "linear",
-                    minFilter: "linear",
+                    magFilter: "nearest",
+                    minFilter: "nearest",
                 });
 
                 // Additional WebGPU setup and rendering logic would go here

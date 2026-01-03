@@ -33,6 +33,7 @@ export interface communicationHandler {
     sendSDPOffer: (sdpOffer:RTCSessionDescriptionInit) => Promise<any>;
     sendICECandidates: (candidates:Array<any>) => Promise<any>;
     sendMSALToken: () => Promise<any>;
+    sendKeepalive: () => Promise<any>;
 }
 
 export const StreamPlayer = forwardRef<StreamPlayerHandle, StreamPlayerProps>(
@@ -123,6 +124,7 @@ export const StreamPlayer = forwardRef<StreamPlayerHandle, StreamPlayerProps>(
         }, [playerState]);
 
         useEffect(() => {
+            let keepaliveInterval : NodeJS.Timeout;
             if(player){
                 player.init();
 
@@ -147,7 +149,19 @@ export const StreamPlayer = forwardRef<StreamPlayerHandle, StreamPlayerProps>(
                     const serverIce = JSON.parse(remoteIce.exchangeResponse);
                     console.log('Received ICE Candidates 2:', serverIce);
                     player.setRemoteIceCandidates(serverIce)
+
+                    keepaliveInterval = setInterval(async () => {
+                        console.log('Sending keepalive...');
+                        await communicationHandler.sendKeepalive()
+                    }, 30 * 1000);
                 })
+            }
+
+            return () => {
+                if(player){
+                    // player.destroy();
+                    clearInterval(keepaliveInterval)
+                }
             }
         }, [player]);
 

@@ -21,6 +21,7 @@ export function PlayerPage() {
     const streamSendSDPOffer = useMutation(trpc.streaming_send_sdp_offer.mutationOptions());
     const streamSendICECandidates = useMutation(trpc.streaming_send_ice_candidates.mutationOptions());
     const streamSendMSALToken = useMutation(trpc.streaming_send_msal_token.mutationOptions());
+    const streamSendKeepalive = useMutation(trpc.streaming_send_keepalive.mutationOptions());
 
     const streamPlayerRef = useRef<StreamPlayerHandle>(null);
 
@@ -114,6 +115,14 @@ export function PlayerPage() {
                 throw new Error('MSAL token is null');
             }
         }
+
+        async sendKeepalive() {
+            return await streamSendKeepalive.mutateAsync({
+                token: this._token,
+                xCloudStreamConfig: this._streamConfig,
+                sessionPath: this._sessionPath
+            });
+        }
     }
 
     return (
@@ -161,17 +170,17 @@ export function PlayerPage() {
                     console.log('Pinged StreamPlayer');
                 }}>Ping StreamPlayer</button> */}
 
-                <button onClick={ () => {
+                <button className='inline' onClick={ () => {
                     if(streamPlayerRef.current){
                         streamPlayerRef.current.attachGamepad(0);
                     }
                 }}>Attach Gamepad (0)</button>
-                <button onClick={ () => {
+                <button className='inline' onClick={ () => {
                     if(streamPlayerRef.current){
                         streamPlayerRef.current.attachMouseKeyboard(0);
                     }
                 }}>Attach MouseKeyboard (0)</button>
-                <button onClick={ () => {
+                <button className='inline' onClick={ () => {
                     if(streamPlayerRef.current){
                         streamPlayerRef.current.toggleDebugOverlay();
                     }

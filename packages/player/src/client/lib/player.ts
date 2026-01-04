@@ -4,6 +4,7 @@ import InputChannel from './channel/input'
 import MessageChannel from './channel/message'
 
 import Ice from './ice'
+import Sdp from './sdp'
 import Stats from './stats'
 
 import VideoComponent from './render/video'
@@ -23,6 +24,7 @@ export default class xCloudPlayer {
     private _elementId: string
     private _isDestoyed: boolean = false
     private _iceHelper = new Ice(this)
+    private _sdpHelper = new Sdp(this)
     private _statsHelper = new Stats(this)
 
     private _videoComponent: VideoComponent | WebGpuComponent | undefined
@@ -33,7 +35,8 @@ export default class xCloudPlayer {
 
         this._elementId = elementId;
         this._peerConnection.addTransceiver('audio', { direction: 'sendrecv' })
-        this._peerConnection.addTransceiver('video', { direction: 'recvonly' })
+        const videoTransceiver = this._peerConnection.addTransceiver('video', { direction: 'recvonly' })
+        videoTransceiver.setCodecPreferences(this._sdpHelper.getDefaultCodecPreferences())
 
         this._peerConnection.ontrack = (event) => {
 
@@ -67,15 +70,17 @@ export default class xCloudPlayer {
             offerToReceiveAudio: true,
             offerToReceiveVideo: true,
         })
-        this._peerConnection.setLocalDescription(offer)
+        const finalOffer = this._sdpHelper.setLocalSDP(offer)
+        this._peerConnection.setLocalDescription(finalOffer)
 
-        return offer
+        return finalOffer
     }
 
     async setRemoteSDP(sdp: string) {
+        const finalSdp = this._sdpHelper.setRemoteSDP(sdp)
         return await this._peerConnection.setRemoteDescription({
             type: 'answer',
-            sdp: sdp,
+            sdp: finalSdp,
         })
     }
 

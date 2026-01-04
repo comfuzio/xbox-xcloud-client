@@ -56,7 +56,7 @@ export default class Overlay {
         if(this._overlays.debug !== undefined){
             this._overlays.debug.innerHTML = ''
 
-            this._overlays.debug.appendChild(this.createLabel('Local Play', this._player.getStats()._remoteIsLocal ? 'Local' : 'Remote', this._player.getStats()._remoteIsLocal ? 'ok' : 'warning'))
+            this._overlays.debug.appendChild(this.createLabel('Local Play', this._player.getStats()._remoteIsLocal ? 'Local' : 'Remote', 'ok'))
             this._overlays.debug.appendChild(this.createLabel('Resolution', this._player.getStats()._videoWidth+'x'+this._player.getStats()._videoHeight, 'ok'))
             this._overlays.debug.appendChild(this.createLabel('FPS', this._player.getStats()._videoFps.toString(), this._player.getStats()._videoFps >= 58 ? 'ok' : 'warning'))
             this._overlays.debug.appendChild(this.createLabel('Connection', this._player.getStats()._remoteIsIpv6 ? 'IPv6' : 'IPv4', 'ok'))

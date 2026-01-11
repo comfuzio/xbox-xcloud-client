@@ -14,6 +14,7 @@ export default class WebGpuComponent {
     private _gpuContext:GPUCanvasContext | null = null
     private _gpuBindGroup:GPUBindGroup | null = null
     private _gpuPipeline:GPURenderPipeline | null = null
+    private _gpuSampler:GPUSampler | null = null
     private _resizeObserver:ResizeObserver | null = null
     private _containerElement:HTMLElement | null = null
 
@@ -57,14 +58,8 @@ export default class WebGpuComponent {
                     device,
                     format,
                     alphaMode: 'opaque',
-                    toneMapping: {
-                        mode: 'extended'
-                    },
-                    // Add desynchronized for lowest latency
-                    compositingAlphaMode: 'opaque',
-                    usage: GPUTextureUsage.TEXTURE_BINDING |
-                            GPUTextureUsage.COPY_DST |
-                            GPUTextureUsage.RENDER_ATTACHMENT
+                    // Enable desynchronized mode for lower latency and reduced jitter
+                    usage: GPUTextureUsage.RENDER_ATTACHMENT
                 });
 
                 this._gpuDevice = device
@@ -136,10 +131,12 @@ export default class WebGpuComponent {
                     layout: "auto",
                 });
 
-                // Recreate bind group with new texture
-                const sampler = this._gpuDevice.createSampler({
+                // Create sampler once and reuse it
+                this._gpuSampler = this._gpuDevice.createSampler({
                     magFilter: "linear",
                     minFilter: "linear",
+                    addressModeU: "clamp-to-edge",
+                    addressModeV: "clamp-to-edge",
                 });
 
                 // Process video frames from the MediaStream
@@ -152,7 +149,7 @@ export default class WebGpuComponent {
                     layout: this._gpuPipeline.getBindGroupLayout(0),
                     entries: [
                         { binding: 0, resource: this._gpuVideoTexture.createView() },
-                        { binding: 1, resource: sampler },
+                        { binding: 1, resource: this._gpuSampler },
                     ]
                 });
 
@@ -201,85 +198,90 @@ export default class WebGpuComponent {
     }
 
     async processVideoData(timestamp?:number) {
-        const { value: frame, done } = await this._gpuReader.read();
-        if (done) return;
+        try {
+            const { value: frame, done } = await this._gpuReader.read();
+            if (done || !this._isActive) {
+                return;
+            }
 
-        // Resize texture if video frame dimensions changed
-        if (this._gpuVideoTexture && 
-            (this._gpuVideoTexture.width !== frame.codedWidth || 
-             this._gpuVideoTexture.height !== frame.codedHeight)) {
-            
-            this._gpuVideoTexture.destroy();
-            
-            this._gpuVideoTexture = this._gpuDevice.createTexture({
-                size: [frame.codedWidth, frame.codedHeight],
-                format: "rgba8unorm",
-                usage: GPUTextureUsage.TEXTURE_BINDING |
-                        GPUTextureUsage.COPY_DST |
-                        GPUTextureUsage.RENDER_ATTACHMENT
+            // Resize texture if video frame dimensions changed
+            if (this._gpuVideoTexture && 
+                (this._gpuVideoTexture.width !== frame.codedWidth || 
+                 this._gpuVideoTexture.height !== frame.codedHeight)) {
+                
+                this._gpuVideoTexture.destroy();
+                
+                this._gpuVideoTexture = this._gpuDevice.createTexture({
+                    size: [frame.codedWidth, frame.codedHeight],
+                    format: "rgba8unorm",
+                    usage: GPUTextureUsage.TEXTURE_BINDING |
+                            GPUTextureUsage.COPY_DST |
+                            GPUTextureUsage.RENDER_ATTACHMENT
+                });
+
+                // Recreate bind group with new texture
+                this._gpuBindGroup = this._gpuDevice.createBindGroup({
+                    layout: this._gpuPipeline.getBindGroupLayout(0),
+                    entries: [
+                        { binding: 0, resource: this._gpuVideoTexture.createView() },
+                        { binding: 1, resource: this._gpuSampler },
+                    ]
+                });
+
+                console.log(`Video texture resized to ${frame.codedWidth}x${frame.codedHeight}`);
+            }
+
+            const renderStartTime = performance.now();
+
+            // Upload the video frame to GPU (non-blocking)
+            this._gpuDevice.queue.copyExternalImageToTexture(
+                { source: frame },
+                { texture: this._gpuVideoTexture },
+                [frame.codedWidth, frame.codedHeight]
+            );
+
+            // Render to canvas
+            const commandEncoder = this._gpuDevice.createCommandEncoder();
+            const passEncoder = commandEncoder.beginRenderPass({
+                colorAttachments: [{
+                    view: this._gpuContext.getCurrentTexture().createView(),
+                    loadOp: 'clear',
+                    storeOp: 'store',
+                    clearValue: { r: 0, g: 0, b: 0, a: 1 },
+                }],
             });
 
-            // Recreate bind group with new texture
-            const sampler = this._gpuDevice.createSampler({
-                magFilter: "linear",
-                minFilter: "linear",
-            });
+            passEncoder.setPipeline(this._gpuPipeline);
+            passEncoder.setBindGroup(0, this._gpuBindGroup);
+            passEncoder.draw(4);
+            passEncoder.end();
 
-            this._gpuBindGroup = this._gpuDevice.createBindGroup({
-                layout: this._gpuPipeline.getBindGroupLayout(0),
-                entries: [
-                    { binding: 0, resource: this._gpuVideoTexture.createView() },
-                    { binding: 1, resource: sampler },
-                ]
-            });
+            this._gpuDevice.queue.submit([commandEncoder.finish()]);
 
-            console.log(`Video texture resized to ${frame.codedWidth}x${frame.codedHeight}`);
+            // Queue metadata frames
+            this._player._channels.input.queueMetadataFrame({
+                serverDataKey: frame.timestamp as number,
+                firstFramePacketArrivalTimeMs: frame.timestamp as number,
+                frameSubmittedTimeMs: frame.timestamp as number,
+                frameDecodedTimeMs: frame.timestamp as number,
+                frameRenderedTimeMs: renderStartTime,
+            })
+
+            frame.close();
+
+        } catch (error) {
+            console.error('Error processing video frame:', error);
         }
 
-        // Upload the video frame to GPU
-        this._gpuDevice.queue.copyExternalImageToTexture(
-            { source: frame },
-            { texture: this._gpuVideoTexture },
-            [frame.codedWidth, frame.codedHeight]
-        );
-
-        // Render to canvas
-        const commandEncoder = this._gpuDevice.createCommandEncoder();
-        const passEncoder = commandEncoder.beginRenderPass({
-            colorAttachments: [{
-                view: this._gpuContext.getCurrentTexture().createView(),
-                loadOp: 'clear',
-                storeOp: 'store',
-                clearValue: { r: 0, g: 0, b: 0, a: 1 },
-            }],
-        });
-
-        passEncoder.setPipeline(this._gpuPipeline);
-        passEncoder.setBindGroup(0, this._gpuBindGroup);
-        passEncoder.draw(4);
-        passEncoder.end();
-
-        this._gpuDevice.queue.submit([commandEncoder.finish()]);
-
-        frame.close();
-
-        // Queue metadata frames
-        this._player._channels.input.queueMetadataFrame({
-            serverDataKey: frame.timestamp as number,
-            firstFramePacketArrivalTimeMs: frame.timestamp as number,
-            frameSubmittedTimeMs: frame.timestamp as number,
-            frameDecodedTimeMs: frame.timestamp as number,
-            frameRenderedTimeMs: frame.timestamp as number,
-        })
-
+        // Immediately continue to next frame without waiting for vsync
+        // This ensures we always render the latest frame with minimal latency
         if(this._isActive){
-            requestAnimationFrame(this.videoLoop.bind(this));
-            // this.videoLoop.bind(this);
+            this.videoLoop();
         }
     }
 
-    videoLoop(timestamp?: number) {
-        this.processVideoData(timestamp);
+    videoLoop() {
+        this.processVideoData();
     }
 
     resizeCanvas() {
@@ -308,7 +310,8 @@ export default class WebGpuComponent {
             this._gpuContext.configure({ 
                 device: this._gpuDevice, 
                 format,
-                alphaMode: 'opaque'
+                alphaMode: 'opaque',
+                usage: GPUTextureUsage.RENDER_ATTACHMENT
             })
 
             console.log(`Canvas resized to ${width}x${height} (display: ${displayWidth}x${displayHeight}, DPR: ${devicePixelRatio})`)
@@ -342,9 +345,20 @@ export default class WebGpuComponent {
         this._isActive = false
         const element = streamHolder?.querySelector('canvas')
 
+        // Clean up GPU reader
+        if(this._gpuReader){
+            this._gpuReader.cancel();
+            this._gpuReader = undefined;
+        }
+
         if(this._resizeObserver){
             this._resizeObserver.disconnect()
             this._resizeObserver = null
+        }
+
+        if(this._gpuVideoTexture){
+            this._gpuVideoTexture.destroy();
+            this._gpuVideoTexture = null;
         }
 
         if(this._overlay !== undefined){

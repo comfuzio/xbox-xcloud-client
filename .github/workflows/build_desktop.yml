@@ -27,7 +27,7 @@ on:
         type: boolean
       
 env:
-  node_version: 22
+  node_version: 24
   reset_cache: ${{ inputs.reset_cache || false }}
 
 jobs:
@@ -41,7 +41,7 @@ jobs:
           submodules: recursive
 
       - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v6.1.0
+        uses: actions/setup-node@v6.2.0
         with:
           node-version: ${{ env.node_version }}
       
@@ -75,7 +75,7 @@ jobs:
           submodules: recursive
 
       - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v6.1.0
+        uses: actions/setup-node@v6.2.0
         with:
           node-version: ${{ env.node_version }}
       
@@ -163,7 +163,7 @@ jobs:
           path: packages/desktop/flatpak/
 
       - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v6.1.0
+        uses: actions/setup-node@v6.2.0
         with:
           node-version: ${{ env.node_version }}
 
@@ -222,7 +222,7 @@ jobs:
           submodules: recursive
 
       - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v6.1.0
+        uses: actions/setup-node@v6.2.0
         with:
           node-version: ${{ env.node_version }}
 
@@ -260,7 +260,7 @@ jobs:
         with:
           name: greenlight-linux.AppImage
           path: |
-            dist/*.AppImage
+            packages/desktop/dist/*.AppImage
         if: matrix.os == 'ubuntu-latest' && contains(github.event.head_commit.message, '[build]')
 
       - name: Publish Linux DEB
@@ -268,7 +268,7 @@ jobs:
         with:
           name: greenlight-linux.deb
           path: |
-            dist/*.deb
+            packages/desktop/dist/*.deb
         if: matrix.os == 'ubuntu-latest' && contains(github.event.head_commit.message, '[build]')
 
       - name: Publish Mac DMG
@@ -276,7 +276,7 @@ jobs:
         with:
           name: greenlight-macos.dmg
           path: |
-            dist/*.dmg
+            packages/desktop/dist/*.dmg
         if: matrix.os == 'macos-latest' && contains(github.event.head_commit.message, '[build]')
 
       - name: Publish Windows EXE
@@ -284,5 +284,5 @@ jobs:
         with:
           name: greenlight-win.zip
           path: |
-            dist/*.exe
+            packages/desktop/dist/*.exe
         if: matrix.os == 'windows-latest' && contains(github.event.head_commit.message, '[build]')

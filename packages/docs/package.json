@@ -14,14 +14,14 @@
     "fumadocs-typescript": "^4.0.14",
     "fumadocs-ui": "^16.2.5",
     "next": "^16.1.0",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
     "@types/mdx": "^2.0.13",
     "@types/node": "25.0.2",
-    "@types/react": "^19.2.7",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.23",
     "eslint": "^9.39.2",

@@ -46,7 +46,7 @@ jobs:
           node-version: ${{ env.node_version }}
       
       - name: Set up node_modules cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         continue-on-error: false
         with:
           path: |
@@ -80,7 +80,7 @@ jobs:
           node-version: ${{ env.node_version }}
       
       - name: Set up node_modules cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         continue-on-error: false
         with:
           path: |
@@ -183,7 +183,7 @@ jobs:
           swap-storage: true
 
       - name: Set up flatpak build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         continue-on-error: false
         with:
           path: |
@@ -227,7 +227,7 @@ jobs:
           node-version: ${{ env.node_version }}
 
       - name: Set up node_modules cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         continue-on-error: false
         with:
           path: |

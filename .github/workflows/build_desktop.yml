@@ -101,7 +101,7 @@ jobs:
     needs: ['tests']
 
     steps:
-      # Intsall node tools
+      # Install node tools
       - uses: actions/checkout@v6
         with:
           repository: 'flatpak/flatpak-builder-tools'
@@ -121,6 +121,11 @@ jobs:
 
       - name: Prep artifacts dir
         run: mkdir ./deps-dist/
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v6.2.0
+        with:
+          node-version: ${{ env.node_version }}
 
       - name: Reset node_modules cache (if enabled)
         if: env.reset_cache == 'true'

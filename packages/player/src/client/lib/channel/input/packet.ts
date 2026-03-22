@@ -396,20 +396,24 @@ export default class InputPacket {
         return packet
     }
 
-    _normalizeTriggerValue(e) {
-        if (e < 0) {
-            return this._convertToUInt16(0)
+    _normalizeTriggerValue(value: number): number {
+        if (value <= 0 || Number.isNaN(value)) {
+            return 0
         }
-        const t = 65535 * e,
-            a = t > 65535 ? 65535 : t
-        return this._convertToUInt16(a)
+
+        if (value >= 1) {
+            return 65535
+        }
+
+        // Fast float -> int conversion in range [0, 65535]
+        return (value * 65535) | 0
     }
 
-    _normalizeAxisValue(e) {
-        const t = this._convertToInt16(32767),
-            a = this._convertToInt16(-32767),
-            n = e * t
-        return n > t ? t : n < a ? a : this._convertToInt16(n)
+    _normalizeAxisValue(value: number) {
+        const max = 32767
+        const min = -32767
+        const scaled = Math.round(value * max)
+        return scaled > max ? max : scaled < min ? min : scaled
     }
 
     _convertToInt16(e) {

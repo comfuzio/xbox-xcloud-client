@@ -12,6 +12,11 @@ export default class InputQueue {
     private _mouseQueue:Array<MouseFrame> = []
     private _keyboardQueue:Array<KeyboardFrame> = []
 
+    // Axis change detection and heartbeat tracking
+    private _gamepadHeartbeatTimers = new Map<number, number>()
+    private _lastGamepadState = new Map<number, GamepadFrame>()
+    private _axisChangeThreshold = 0.08
+
     constructor(player:xCloudPlayer) {
         this._player = player
     }
@@ -35,14 +40,52 @@ export default class InputQueue {
         this._gamepadQueue.push(data)
     }
 
+    private _hasSignificantAxisChange(current:GamepadFrame, last:GamepadFrame | undefined):boolean {
+        if(!last) return true  // First frame always send
+
+        const stickNames = ['LeftThumbXAxis', 'LeftThumbYAxis', 'RightThumbXAxis', 'RightThumbYAxis'] as const
+        const triggerNames = ['LeftTrigger', 'RightTrigger'] as const
+
+        // For analog sticks: only skip if BOTH change is small AND value is near center
+        for(const stick of stickNames){
+            const delta = Math.abs(current[stick] - last[stick])
+            const value = Math.abs(current[stick])
+            if(delta > this._axisChangeThreshold || value > 0.15){
+                return true
+            }
+        }
+
+        // For triggers: always send if they changed (higher sensitivity needed)
+        for(const trigger of triggerNames){
+            if(Math.abs(current[trigger] - last[trigger]) > 0.01){
+                return true
+            }
+        }
+
+        return false
+    }
+
+    private _isHeartbeatDue(gamepadIndex:number):boolean {
+        const lastHeartbeat = this._gamepadHeartbeatTimers.get(gamepadIndex) ?? 0
+        return performance.now() - lastHeartbeat > 33  // Send at least every 33ms
+    }
+
     queueMetadataFrame(data:MetadataFrame) {
         this._metadataQueue.push(data)
         this.checkQueueAndSend()
     }
 
     queueGamepadFrame(data:GamepadFrame) {
-        this._upsertGamepadFrame(data)
-        this.checkQueueAndSend()
+        const lastFrame = this._lastGamepadState.get(data.GamepadIndex)
+        const hasChange = this._hasSignificantAxisChange(data, lastFrame)
+        const isDue = this._isHeartbeatDue(data.GamepadIndex)
+
+        if(hasChange || isDue){
+            this._upsertGamepadFrame(data)
+            this._lastGamepadState.set(data.GamepadIndex, data)
+            this._gamepadHeartbeatTimers.set(data.GamepadIndex, performance.now())
+            this.checkQueueAndSend()
+        }
     }
 
     queueGamepadFrames(frames:Array<GamepadFrame>, forceSend = false) {

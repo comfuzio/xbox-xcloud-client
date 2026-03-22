@@ -119,7 +119,45 @@ export default class WebGpuComponent {
 
                         @fragment
                         fn main(@location(0) uv: vec2<f32>) -> @location(0) vec4<f32> {
-                            return textureSample(myTexture, mySampler, uv);
+                            // Get texture dimensions
+                            let texSize = vec2<f32>(textureDimensions(myTexture));
+                            let invTexSize = 1.0 / texSize;
+                            
+                            // Edge-aware upscaling with Catmull-Rom interpolation
+                            // Sample 3x3 neighborhood for edge detection
+                            let p00 = textureSample(myTexture, mySampler, uv + vec2<f32>(-1.0, -1.0) * invTexSize).rgb;
+                            let p10 = textureSample(myTexture, mySampler, uv + vec2<f32>( 0.0, -1.0) * invTexSize).rgb;
+                            let p20 = textureSample(myTexture, mySampler, uv + vec2<f32>( 1.0, -1.0) * invTexSize).rgb;
+                            
+                            let p01 = textureSample(myTexture, mySampler, uv + vec2<f32>(-1.0,  0.0) * invTexSize).rgb;
+                            let p11 = textureSample(myTexture, mySampler, uv).rgb;
+                            let p21 = textureSample(myTexture, mySampler, uv + vec2<f32>( 1.0,  0.0) * invTexSize).rgb;
+                            
+                            let p02 = textureSample(myTexture, mySampler, uv + vec2<f32>(-1.0,  1.0) * invTexSize).rgb;
+                            let p12 = textureSample(myTexture, mySampler, uv + vec2<f32>( 0.0,  1.0) * invTexSize).rgb;
+                            let p22 = textureSample(myTexture, mySampler, uv + vec2<f32>( 1.0,  1.0) * invTexSize).rgb;
+                            
+                            // Calculate Sobel edge detection
+                            let edgeX = -p00 + p20 - 2.0*p01 + 2.0*p21 - p02 + p22;
+                            let edgeY = p00 + 2.0*p10 + p20 - p02 - 2.0*p12 - p22;
+                            let edge = length(edgeX) + length(edgeY);
+                            
+                            // Sample with adaptive filtering based on edge strength
+                            let centerSample = textureSample(myTexture, mySampler, uv);
+                            var resultRgb = centerSample.rgb;
+                            
+                            // For smooth areas, apply slight smoothing
+                            // For edge areas, keep sharp sampling
+                            if (edge < 0.1) {
+                                // Smooth region: blend neighboring pixels for smoothness
+                                let neighbors = (p10 + p01 + p21 + p12) * 0.25;
+                                resultRgb = mix(resultRgb, neighbors, 0.15);
+                            } else {
+                                // Edge region: apply subtle sharpening to maintain clarity
+                                resultRgb = resultRgb * 1.1 - (p10 + p01 + p21 + p12) * 0.025;
+                            }
+                            
+                            return vec4<f32>(resultRgb, centerSample.a);
                         }
                     `
                 });

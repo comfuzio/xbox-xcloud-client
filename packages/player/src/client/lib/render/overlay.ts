@@ -38,6 +38,7 @@ export default class Overlay {
         this._overlays.debug.style.height = this._videoComponent.getElement()?.style.height || 'auto'
         this._overlays.debug.style.background = 'linear-gradient(0deg, rgba(0,0,0, 0) 0%, rgba(0,0,0, 0) 75%, rgba(0,0,0, 0.5) 100%)'
         this._overlays.debug.style.padding = '10px'
+        this._overlays.debug.style.pointerEvents = 'none'
 
         document.getElementById(this._player.getElementId())?.appendChild(this._overlays.debug)
 
@@ -65,6 +66,7 @@ export default class Overlay {
             if (frameStats) {
                 this._overlays.debug.appendChild(this.createLabel('Render FPS', frameStats.renderingFps.toString(), frameStats.renderingFps >= 58 ? 'ok' : 'warning'))
                 this._overlays.debug.appendChild(this.createLabel('Render Delay', frameStats.renderDelayMs.toString() + ' ms', frameStats.renderDelayMs < 16 ? 'ok' : frameStats.renderDelayMs < 33 ? 'warning' : 'error'))
+                this._overlays.debug.appendChild(this.createLabel('Dropped Frames', frameStats.droppedFrames.toString(), frameStats.droppedFrames === 0 ? 'ok' : frameStats.droppedFrames < 30 ? 'warning' : 'error'))
             }
             
             this._overlays.debug.appendChild(this.createLabel('Connection', this._player.getStats()._remoteIsIpv6 ? 'IPv6' : 'IPv4', 'ok'))

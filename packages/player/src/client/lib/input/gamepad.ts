@@ -306,20 +306,38 @@ export default class Gamepad {
         }
 
         // Check for button overrides from the keyboard
+        // for(const button in this._gamepadOverride.buttons){
+        //     frame[button] = this._gamepadOverride.buttons[button]
+
+        //     // Clean up existing keys if they are 0
+        //     if(this._gamepadOverride.buttons[button] === 0){
+        //         // Remove key from override
+        //         const newOverrideButtons = {}
+        //         for(const oButton in this._gamepadOverride.buttons){
+        //             if(this._gamepadOverride.buttons[oButton] !== 0){
+        //                 newOverrideButtons[oButton] = this._gamepadOverride.buttons[oButton]
+        //             }
+        //         }
+        //         this._gamepadOverride.buttons = newOverrideButtons
+        //     }
+        // }
+
+        // Check for button overrides from the keyboard
         for(const button in this._gamepadOverride.buttons){
             frame[button] = this._gamepadOverride.buttons[button]
+        }
 
-            // Clean up existing keys if they are 0
+        // Clean up released buttons in a separate pass
+        const buttonsToRemove = []
+        for(const button in this._gamepadOverride.buttons){
             if(this._gamepadOverride.buttons[button] === 0){
-                // Remove key from override
-                const newOverrideButtons = {}
-                for(const oButton in this._gamepadOverride.buttons){
-                    if(this._gamepadOverride.buttons[oButton] !== 0){
-                        newOverrideButtons[oButton] = this._gamepadOverride.buttons[oButton]
-                    }
-                }
-                this._gamepadOverride.buttons = newOverrideButtons
+                buttonsToRemove.push(button)
             }
+        }
+
+        // Delete released buttons instead of recreating the object
+        for(const button of buttonsToRemove){
+            delete this._gamepadOverride.buttons[button]
         }
 
         // Start + Select Nexus menu workaround

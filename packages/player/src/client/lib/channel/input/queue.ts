@@ -58,7 +58,7 @@ export default class InputQueue {
             return
         }
         
-        if(this._metadataQueue.length > 5){
+        if(this._metadataQueue.length > 1){
             this.sendQueue()
 
         } else if(this._metadataQueue.length > 0){

@@ -16,19 +16,38 @@ export default class InputQueue {
         this._player = player
     }
 
+    private _hasQueuedData() {
+        return this._metadataQueue.length > 0 ||
+            this._gamepadQueue.length > 0 ||
+            this._pointerQueue.length > 0 ||
+            this._mouseQueue.length > 0 ||
+            this._keyboardQueue.length > 0
+    }
+
+    private _upsertGamepadFrame(data:GamepadFrame) {
+        for(let i = 0; i < this._gamepadQueue.length; i++){
+            if(this._gamepadQueue[i].GamepadIndex === data.GamepadIndex){
+                this._gamepadQueue[i] = data
+                return
+            }
+        }
+
+        this._gamepadQueue.push(data)
+    }
+
     queueMetadataFrame(data:MetadataFrame) {
         this._metadataQueue.push(data)
         this.checkQueueAndSend()
     }
 
     queueGamepadFrame(data:GamepadFrame) {
-        this._gamepadQueue.push(data)
+        this._upsertGamepadFrame(data)
         this.checkQueueAndSend()
     }
 
     queueGamepadFrames(frames:Array<GamepadFrame>, forceSend = false) {
-        for(const frame in frames){
-            this._gamepadQueue.push(frames[frame])
+        for(const frame of frames){
+            this._upsertGamepadFrame(frame)
         }
         this.checkQueueAndSend(forceSend)
     }
@@ -54,23 +73,27 @@ export default class InputQueue {
 
     checkQueueAndSend(forceSend = false) {
         if(forceSend === true){
+            if(this._hasQueuedData()){
+                this.sendQueue()
+            }
+            return
+        }
+
+        // Prioritize low-latency gamepad delivery.
+        if(this._gamepadQueue.length > 0){
             this.sendQueue()
             return
         }
-        
-        if(this._metadataQueue.length > 0){
-            this.sendQueue()
 
-        } else if(this._metadataQueue.length > 0){
-            if(this._gamepadQueue.length > 0){
-                this.sendQueue()
-            } else if(this._mouseQueue.length > 0){
-                this.sendQueue()
-            } else if(this._keyboardQueue.length > 0){
-                this.sendQueue()
-            } else if(this._pointerQueue.length > 0){
-                this.sendQueue()
-            }
+        // Non-metadata input should also not wait.
+        if(this._mouseQueue.length > 0 || this._keyboardQueue.length > 0 || this._pointerQueue.length > 0){
+            this.sendQueue()
+            return
+        }
+
+        // Metadata-only can batch slightly.
+        if(this._metadataQueue.length > 5){
+            this.sendQueue()
         }
     }
 

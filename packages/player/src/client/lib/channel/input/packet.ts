@@ -175,11 +175,8 @@ export default class InputPacket {
             console.warn('metadataQueue is bigger then 30. This might impact reliability!')
         }
 
-        for (; frames.length > 0;) {
-            // this._metadataFps.count()
-            const frame = frames.shift()
-
-            if(frame === undefined) {break}
+        for(let i = 0; i < frames.length; i++) {
+            const frame = frames[i]
 
             const firstFramePacketArrivalTimeMs = frame.firstFramePacketArrivalTimeMs
             const frameSubmittedTimeMs = frame.frameSubmittedTimeMs
@@ -210,44 +207,40 @@ export default class InputPacket {
             console.warn('gamepadQueue is bigger then 30. This might impact reliability!')
         }
 
-        for (; frames.length > 0;) {
-            // this._inputFps.count()
-            const shift = frames.shift()
-            if(shift !== undefined){
-                const input:InputFrame = shift
+        for(let i = 0; i < frames.length; i++) {
+            const input:InputFrame = frames[i]
 
-                packet.setUint8(offset, input.GamepadIndex)
-                offset++
+            packet.setUint8(offset, input.GamepadIndex)
+            offset++
 
-                let buttonMask = 0
-                if(input.Nexus > 0){ buttonMask |= 2 }
-                if(input.Menu > 0){ buttonMask |= 4 }
-                if(input.View > 0){ buttonMask |= 8 }
-                if(input.A > 0){ buttonMask |= 16 }
-                if(input.B > 0){ buttonMask |= 32 }
-                if(input.X > 0){ buttonMask |= 64 }
-                if(input.Y > 0){ buttonMask |= 128 }
-                if(input.DPadUp > 0){ buttonMask |= 256 }
-                if(input.DPadDown > 0){ buttonMask |= 512 }
-                if(input.DPadLeft > 0){ buttonMask |= 1024 }
-                if(input.DPadRight > 0){ buttonMask |= 2048 }
-                if(input.LeftShoulder > 0){ buttonMask |= 4096 }
-                if(input.RightShoulder > 0){ buttonMask |= 8192 }
-                if(input.LeftThumb > 0){ buttonMask |= 16384 }
-                if(input.RightThumb > 0){ buttonMask |= 32768 }
-    
-                packet.setUint16(offset, buttonMask, true)
-                packet.setInt16(offset+2, this._normalizeAxisValue(input.LeftThumbXAxis), true) // LeftThumbXAxis
-                packet.setInt16(offset+4, this._normalizeAxisValue(-input.LeftThumbYAxis), true) // LeftThumbYAxis
-                packet.setInt16(offset+6, this._normalizeAxisValue(input.RightThumbXAxis), true) // RightThumbXAxis
-                packet.setInt16(offset+8, this._normalizeAxisValue(-input.RightThumbYAxis), true) // RightThumbYAxis
-                packet.setUint16(offset+10, this._normalizeTriggerValue(input.LeftTrigger), true) // LeftTrigger
-                packet.setUint16(offset+12, this._normalizeTriggerValue(input.RightTrigger), true) // RightTrigger
+            let buttonMask = 0
+            if(input.Nexus > 0){ buttonMask |= 2 }
+            if(input.Menu > 0){ buttonMask |= 4 }
+            if(input.View > 0){ buttonMask |= 8 }
+            if(input.A > 0){ buttonMask |= 16 }
+            if(input.B > 0){ buttonMask |= 32 }
+            if(input.X > 0){ buttonMask |= 64 }
+            if(input.Y > 0){ buttonMask |= 128 }
+            if(input.DPadUp > 0){ buttonMask |= 256 }
+            if(input.DPadDown > 0){ buttonMask |= 512 }
+            if(input.DPadLeft > 0){ buttonMask |= 1024 }
+            if(input.DPadRight > 0){ buttonMask |= 2048 }
+            if(input.LeftShoulder > 0){ buttonMask |= 4096 }
+            if(input.RightShoulder > 0){ buttonMask |= 8192 }
+            if(input.LeftThumb > 0){ buttonMask |= 16384 }
+            if(input.RightThumb > 0){ buttonMask |= 32768 }
 
-                packet.setUint32(offset+14, 1, true) // PhysicalPhysicality
-                packet.setUint32(offset+18, 1, false) // VirtualPhysicality
-                offset += 22
-            }
+            packet.setUint16(offset, buttonMask, true)
+            packet.setInt16(offset+2, this._normalizeAxisValue(input.LeftThumbXAxis), true) // LeftThumbXAxis
+            packet.setInt16(offset+4, this._normalizeAxisValue(-input.LeftThumbYAxis), true) // LeftThumbYAxis
+            packet.setInt16(offset+6, this._normalizeAxisValue(input.RightThumbXAxis), true) // RightThumbXAxis
+            packet.setInt16(offset+8, this._normalizeAxisValue(-input.RightThumbYAxis), true) // RightThumbYAxis
+            packet.setUint16(offset+10, this._normalizeTriggerValue(input.LeftTrigger), true) // LeftTrigger
+            packet.setUint16(offset+12, this._normalizeTriggerValue(input.RightTrigger), true) // RightTrigger
+
+            packet.setUint32(offset+14, 1, true) // PhysicalPhysicality
+            packet.setUint32(offset+18, 1, false) // VirtualPhysicality
+            offset += 22
         }
 
         return offset
@@ -264,16 +257,17 @@ export default class InputPacket {
 
         // for (; frames.length > 0;) {
         // this._inputFps.count()
-        const shift = frames.shift()
-        if(shift !== undefined){
-            packet.setUint8(offset, shift.events.length)
+        const frame = frames[0]
+        if(frame !== undefined){
+            packet.setUint8(offset, frame.events.length)
             offset++
 
             const screenWidth = this._serverVideoWidth
             const screenHeight = this._serverVideoHeight
 
-            for(const event in shift.events){
-                const rect = shift.events[event].target.getBoundingClientRect()
+            for(let i = 0; i < frame.events.length; i++){
+                const event = frame.events[i]
+                const rect = event.target.getBoundingClientRect()
 
                 let e = 0.06575749909301447 * (screenHeight / 1)
                 let n = 0.06575749909301447 * (screenWidth / 1)
@@ -282,20 +276,20 @@ export default class InputPacket {
                 e =1
                 n =1
 
-                if(shift.events[event].type === 'pointerup'){
+                if(event.type === 'pointerup'){
                     e = 0
                     n = 0
                 }
 
                 packet.setUint16(offset, e, true)
                 packet.setUint16(offset+2, n, true)
-                packet.setUint8(offset+4, 255*shift.events[event].pressure)
-                packet.setUint16(offset+5, shift.events[event].twist, true)
+                packet.setUint8(offset+4, 255*event.pressure)
+                packet.setUint16(offset+5, event.twist, true)
                 packet.setUint32(offset+7, 0, true)
-                let o = (shift.events[event].x - rect.left) * (screenWidth / rect.width)
-                    , l = (shift.events[event].y - rect.top) * (screenHeight / rect.height)
+                let o = (event.x - rect.left) * (screenWidth / rect.width)
+                    , l = (event.y - rect.top) * (screenHeight / rect.height)
 
-                if(shift.events[event].type === 'pointerup'){
+                if(event.type === 'pointerup'){
                     // Reset x and y to 0 on pointerup
                     o = 0
                     l = 0
@@ -303,8 +297,8 @@ export default class InputPacket {
 
                 packet.setUint32(offset+11, o, true)
                 packet.setUint32(offset+15, l, true)
-                packet.setUint8(offset+19, (shift.events[event].type === 'pointerdown') ? 1 :
-                    (shift.events[event].type === 'pointerup') ? 2 : (shift.events[event].type === 'pointermove') ? 3 : 0)
+                packet.setUint8(offset+19, (event.type === 'pointerdown') ? 1 :
+                    (event.type === 'pointerup') ? 2 : (event.type === 'pointermove') ? 3 : 0)
                     
                 offset = offset+20
             }
@@ -321,21 +315,17 @@ export default class InputPacket {
             console.warn('mouseQueue is bigger then 30. This might impact reliability!')
         }
 
-        for (; frames.length > 0;) {
-            // this._inputFps.count()
-            const shift = frames.shift()
-            if(shift !== undefined){
-                const input:MouseFrame = shift
+        for(let i = 0; i < frames.length; i++) {
+            const input:MouseFrame = frames[i]
 
-                packet.setUint32(offset, input.X, true)
-                packet.setUint32(offset+4, input.Y, true)
-                packet.setUint32(offset+8, input.WheelX, true)
-                packet.setUint32(offset+12, input.WheelY, true)
+            packet.setUint32(offset, input.X, true)
+            packet.setUint32(offset+4, input.Y, true)
+            packet.setUint32(offset+8, input.WheelX, true)
+            packet.setUint32(offset+12, input.WheelY, true)
 
-                packet.setUint8(offset+16, input.Buttons)
-                packet.setUint8(offset+17, input.Relative)
-                offset += 18
-            }
+            packet.setUint8(offset+16, input.Buttons)
+            packet.setUint8(offset+17, input.Relative)
+            offset += 18
         }
 
         return offset
@@ -349,20 +339,16 @@ export default class InputPacket {
             console.warn('keyboardQueue is bigger then 30. This might impact reliability!')
         }
 
-        for (; frames.length > 0;) {
-            // this._inputFps.count()
-            const shift = frames.shift()
-            if(shift !== undefined){
-                const input:KeyboardFrame = shift
+        for(let i = 0; i < frames.length; i++) {
+            const input:KeyboardFrame = frames[i]
 
-                packet.setUint8(offset, 2) // 1 = Known, 2 = VKey, 3 = AppCommand, 0 = Unknown
-                packet.setUint8(offset+1, input.pressed ? 1 : 0)
-                packet.setUint8(offset+2, input.keyCode)
-                // packet.setUint8(offset+3, 1)
-                // packet.setUint8(offset+4, input.keyCode)
+            packet.setUint8(offset, 2) // 1 = Known, 2 = VKey, 3 = AppCommand, 0 = Unknown
+            packet.setUint8(offset+1, input.pressed ? 1 : 0)
+            packet.setUint8(offset+2, input.keyCode)
+            // packet.setUint8(offset+3, 1)
+            // packet.setUint8(offset+4, input.keyCode)
 
-                offset += 3
-            }
+            offset += 3
         }
 
         return offset
@@ -414,15 +400,5 @@ export default class InputPacket {
         const min = -32767
         const scaled = Math.round(value * max)
         return scaled > max ? max : scaled < min ? min : scaled
-    }
-
-    _convertToInt16(e) {
-        const int = new Int16Array(1)
-        return int[0] = e, int[0]
-    }
-
-    _convertToUInt16(e) {
-        const int = new Uint16Array(1)
-        return int[0] = e, int[0]
     }
 }

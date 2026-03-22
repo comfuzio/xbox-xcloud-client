@@ -408,7 +408,7 @@ export default class Gamepad {
         }
     }
 
-    normaliseAxis(value) {
+    normaliseAxis(value:number) {
         if(Math.abs(value) < this._options.gamepad_deadzone) {
             return 0
         }

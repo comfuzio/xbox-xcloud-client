@@ -152,8 +152,8 @@ export function PlayerPage() {
                 ) }
 
                 <h2>xCloud</h2>
-                <input className="filter-input" type="text" readOnly value="HALOINFINITE" />
-                <button className="inline" onClick={ () => requestStream("HALOINFINITE", true) }>Connect</button>
+                <input id="cloudGame" className="filter-input" type="text" defaultValue="HALOINFINITE" />
+                <button className="inline" onClick={ () => requestStream((document.getElementById('cloudGame') as HTMLInputElement).value, true) }>Connect</button>
             </div>
 
             { streamConfig && session && <div id="player-container" className="card">

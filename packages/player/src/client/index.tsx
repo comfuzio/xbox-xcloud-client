@@ -183,7 +183,7 @@ export const StreamPlayer = forwardRef<StreamPlayerHandle, StreamPlayerProps>(
 class VirtualGamepad {
 
     _isAttached = false
-    _gamepad:any
+    _gamepad:Gamepad | undefined
     _player:xCloudPlayer
 
     constructor(player:xCloudPlayer) {
@@ -210,25 +210,25 @@ class VirtualGamepad {
             console.log('[VirtualGamepad] Virtual Gamepad is not attached')
             return
         }
-        this._gamepad.detach()
+        this._gamepad?.detach()
         this._isAttached = false
     }
 
     sendGamepadButtonPress(button: string) {
-        this._gamepad.sendButtonState(button, 1)
+        this._gamepad?.sendButtonState(button, 1)
         setTimeout(() => {
-            this._gamepad.sendButtonState(button, 0)
+            this._gamepad?.sendButtonState(button, 0)
         }, 50)
     }
 
     sendGamepadButtonState(button: string, value: number) {
-        this._gamepad.sendButtonState(button, value)
+        this._gamepad?.sendButtonState(button, value)
     }
 }
 
 class VirtualMKB {
     _isAttached = false
-    _mkb
+    _mkb: MouseKeyboard | undefined
     _player:xCloudPlayer
 
     constructor(player:xCloudPlayer) {
@@ -253,7 +253,7 @@ class VirtualMKB {
             console.log('[VirtualMKB] Virtual MKB is not attached')
             return
         }
-        this._mkb.detach()
+        this._mkb?.detach()
         this._isAttached = false
     }
 }

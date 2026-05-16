@@ -219,7 +219,7 @@ jobs:
   release:
     name: Build/release Electron app
     runs-on: ${{ matrix.os }}
-    needs: ['tests']
+    needs: ['cachedeps']
 
     strategy:
       matrix:
@@ -301,56 +301,10 @@ jobs:
   # Build Desktop V3
   ###
 
-  cachedeps_v3:
-    name: Generate cached sources
-    runs-on: ubuntu-latest
-
-    steps:
-      # Install node tools
-      - uses: actions/checkout@v6
-        with:
-          repository: 'flatpak/flatpak-builder-tools'
-
-      - name: Install Python deps
-        run: pip3 install aiohttp toml
-
-      - name: Install flatpak-builder-tools
-        run: pipx install ./node/
-
-      # Generate sources
-      - name: Checkout Git repository
-        uses: actions/checkout@v6
-        with:
-          submodules: recursive
-          # clean: true
-
-      - name: Prep artifacts dir
-        run: mkdir ./deps-dist/
-
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v6.4.0
-        with:
-          node-version: ${{ env.node_version }}
-
-      - name: Reset node_modules cache (if enabled)
-        if: env.reset_cache == 'true'
-        run: rm -rf node_modules/
-
-      - name: Install yarn dependencies
-        run: yarn
-
-      - name: Build yarn cache
-        run: flatpak-node-generator yarn yarn.lock -o ./deps-dist/yarn-sources.json
-
-      - uses: actions/upload-artifact@master
-        with:
-          name: flatpak-sources
-          path: ./deps-dist/
-
   flatpak_v3:
     name: Flatpak Build
     runs-on: ${{ matrix.os }}
-    needs: [cachedeps_v3]
+    needs: [cachedeps]
 
     strategy:
       matrix:

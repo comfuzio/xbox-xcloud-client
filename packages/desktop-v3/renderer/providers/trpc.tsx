@@ -66,7 +66,7 @@ export const TrpcProviderComponent = ({ children }: { children: ReactNode }) => 
         //     }),
         // })
         httpBatchLink({
-          url: 'https://polished-hall-11d4.info-5b7.workers.dev/trpc',
+          url: 'https://greenlight.info-5b7.workers.dev/trpc',
           // Optional: Add headers or other configuration
           // headers() {
           //   return {

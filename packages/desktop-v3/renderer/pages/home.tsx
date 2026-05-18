@@ -4,7 +4,23 @@ import Sidebar from '../components/sidebar'
 // import Link from 'next/link'
 // import Image from 'next/image'
 
+import { useQueryClient } from "@tanstack/react-query";
+import { useTRPC } from "../utils/trpc";
+
 export default function HomePage() {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  const ping = () => {
+    queryClient.fetchQuery(trpc.ping.queryOptions())
+      .then((data) => {
+          console.log(data)
+      })
+      .catch((error) => {
+          console.error('Error fetching data:', error);
+      });
+  }
+
   return (
     <React.Fragment>
       <Head>
@@ -28,6 +44,8 @@ export default function HomePage() {
                   <div className="mb-6 animate-fade-in-up">
                     <h2 className="text-2xl font-bold text-white mb-1">Game Library</h2>
                     <p className="text-white/40 text-sm">0 titles in your collection</p>
+
+                    <button onClick={ping}>Ping</button>
                   </div>
                 </div>
               </div>

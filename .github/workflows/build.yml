@@ -219,7 +219,7 @@ jobs:
   release:
     name: "V2: Build/release Electron app"
     runs-on: ${{ matrix.os }}
-    needs: ['cachedeps']
+    needs: ['tests']
 
     strategy:
       matrix:
@@ -331,7 +331,7 @@ jobs:
   flatpak_v3:
     name: "V3: Flatpak Build"
     runs-on: ubuntu-latest
-    needs: [test_v3]
+    needs: [test_v3, cachedeps]
 
     container:
       image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-48

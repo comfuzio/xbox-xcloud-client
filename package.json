@@ -15,7 +15,9 @@
     "platform": "yarn workspace @greenlight/platform",
     "playground": "yarn workspace @greenlight/platform-playground",
     "player": "yarn workspace @greenlight/player",
-    "test": "yarn logger test"
+
+    "deps": "yarn logger build && yarn player build && yarn platform build",
+    "test:v3": "yarn logger test && yarn platform test"
   },
   "workspaces": [
     "packages/logger",

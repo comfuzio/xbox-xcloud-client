@@ -328,6 +328,12 @@ jobs:
         if: env.reset_cache == 'true'
         run: rm -rf node_modules/
 
+      - name: Install yarn dependencies
+        run: yarn
+
+      - name: Run tests
+        run: yarn test:v3
+
   flatpak_v3:
     name: "V3: Flatpak Build"
     runs-on: ubuntu-latest

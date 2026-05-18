@@ -1,6 +1,6 @@
 {
-	"name": "polished-hall-11d4",
-	"version": "0.0.0",
+	"name": "@greenlight/pages",
+	"version": "0.1.0",
 	"private": true,
 	"scripts": {
 		"deploy": "wrangler deploy",

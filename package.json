@@ -16,7 +16,7 @@
     "playground": "yarn workspace @greenlight/platform-playground",
     "player": "yarn workspace @greenlight/player",
 
-    "deps": "yarn logger build && yarn player build && yarn platform build",
+    "build:depsv3": "yarn logger build && yarn player build && yarn platform build",
     "test:v3": "yarn logger test && yarn platform test"
   },
   "workspaces": [

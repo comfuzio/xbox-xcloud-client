@@ -6,7 +6,7 @@
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
-		"build": "cd ../desktop-v3 && yarn build:web && cp -r web-out/* ../pages/public/",
+		"build": "cd ../desktop-v3 && yarn build:web && mkdir -p ../pages/public/ && cp -r web-out/* ../pages/public/",
 		"test": "vitest",
 		"cf-typegen": "wrangler types"
 	},

@@ -8,16 +8,14 @@ on:
     tags:
       - v*
     paths:
-      - 'packages/desktop/**'
-      - 'packages/desktop-v3/**'
+      - 'packages/**'
       - 'yarn.lock'
       - '.github/workflows/*.yml'
   pull_request:
     branches:
       - main-v2
     paths:
-      - 'packages/desktop/**'
-      - 'packages/desktop-v3/**'
+      - 'packages/**'
       - 'yarn.lock'
       - '.github/workflows/*.yml'
   workflow_dispatch:

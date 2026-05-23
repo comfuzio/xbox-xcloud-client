@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Head from 'next/head'
 
 // import { useQueryClient } from "@tanstack/react-query";
-import { useTRPC, RouterOutputs } from "../../utils/trpc";
+import { RouterOutputs } from "../../utils/trpc";
 import { useAuth } from '../../contexts/AuthContext';
 
 export default function HomePage() {

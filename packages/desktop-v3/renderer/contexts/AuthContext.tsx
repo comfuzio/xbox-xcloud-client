@@ -106,7 +106,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const verifyCode = async (code: string) => {
-    setIsAuthenticating(true);
+    // setIsAuthenticating(true);
     try {
       const userToken = await queryClient.fetchQuery(trpc.auth_msal_verify.queryOptions(code));
       console.log('User token obtained:', userToken);

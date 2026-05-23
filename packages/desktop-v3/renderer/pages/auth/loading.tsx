@@ -1,10 +1,10 @@
 import React from 'react'
 import Head from 'next/head'
 
-import { useAuth } from '../../contexts/AuthContext';
+// import { useAuth } from '../../contexts/AuthContext';
 
 export default function AuthLoadingPage() {
-  const { authState } = useAuth();
+  // const { authState } = useAuth();
 
   return (
     <React.Fragment>

@@ -20,6 +20,16 @@ export default function HomePage() {
           console.error('Error fetching data:', error);
       });
   }
+  
+  const getVersion = () => {
+    queryClient.fetchQuery(trpc.version.queryOptions())
+      .then((data) => {
+          console.log(data)
+      })
+      .catch((error) => {
+          console.error('Error fetching data:', error);
+      });
+  }
 
   return (
     <React.Fragment>
@@ -46,6 +56,7 @@ export default function HomePage() {
                     <p className="text-white/40 text-sm">0 titles in your collection</p>
 
                     <button onClick={ping}>Ping</button>
+                    <button onClick={getVersion}>getVersion</button>
                   </div>
                 </div>
               </div>

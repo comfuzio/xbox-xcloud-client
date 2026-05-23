@@ -1,9 +1,9 @@
 import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
 
-// import { version } from '../package.json';
+import pkg from '../package.json';
 
-// import authController from './controller/auth.js';
+import authController from './controller/auth.js';
 import profileController from './controller/profile.js';
 import smartglassController from './controller/smartglass.js';
 import gamepassController from './controller/gamepass.js';
@@ -22,7 +22,7 @@ export const router = t.router;
 export const publicProcedure = t.procedure;
 export const createCallerFactory = t.createCallerFactory;
 
-// const auth = new authController();
+const auth = new authController();
 const profile = new profileController();
 const smartglass = new smartglassController();
 const gamepass = new gamepassController();
@@ -58,14 +58,14 @@ const xCloudStreamConfig = z.object({
 
 export const appRouter = router({
     ping: publicProcedure.query(() => 'pong'),
-    // version: publicProcedure.query(() => version),
+    version: publicProcedure.query(() => pkg.version),
     echo: publicProcedure.input(z.string()).query(({ input }) => `echo: ${input}`),
 
-    // auth_msal_start: publicProcedure.query(async () => await auth.startMsalAuth()),
-    // auth_msal_verify: publicProcedure.input(z.string()).query(async ({ input }) => await auth.verifyDeviceCode(input)),
-    // auth_msal_refresh: publicProcedure.input(zodUserToken).query(async ({ input }) => await auth.refreshUserToken(input)),
-    // auth_get_streamingtokens: publicProcedure.input(zodUserToken).query(async ({ input }) => await auth.getStreamingTokens(input)),
-    // auth_get_webtoken: publicProcedure.input(zodUserToken).query(async ({ input }) => await auth.getWebToken(input)),
+    auth_msal_start: publicProcedure.query(async () => await auth.startMsalAuth()),
+    auth_msal_verify: publicProcedure.input(z.string()).query(async ({ input }) => await auth.verifyDeviceCode(input)),
+    auth_msal_refresh: publicProcedure.input(zodUserToken).query(async ({ input }) => await auth.refreshUserToken(input)),
+    auth_get_streamingtokens: publicProcedure.input(zodUserToken).query(async ({ input }) => await auth.getStreamingTokens(input)),
+    auth_get_webtoken: publicProcedure.input(zodUserToken).query(async ({ input }) => await auth.getWebToken(input)),
 
     profile_get_current: publicProcedure.input(zodWebToken).query(async ({ input }) => await profile.getCurrentProfile(input)),
     profile_get_friends: publicProcedure.input(zodWebToken).query(async ({ input }) => await profile.getFriendsList(input)),

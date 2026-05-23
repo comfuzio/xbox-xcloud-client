@@ -1,15 +1,16 @@
-import React, {useState} from 'react'
+import React from 'react'
 import Head from 'next/head'
 
-import { useQueryClient } from "@tanstack/react-query";
-import { useTRPC } from "../../utils/trpc";
+// import { useQueryClient } from "@tanstack/react-query";
+// import { useTRPC } from "../../utils/trpc";
 import { useAuth } from '../../contexts/AuthContext';
 
 export default function HomePage() {
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
+  // const trpc = useTRPC();
+  // const queryClient = useQueryClient();
 
-  const { isAuthenticated, isAuthenticating, authState, startAuth } = useAuth();
+  // const { isAuthenticated, isAuthenticating, authState, startAuth } = useAuth();
+  const { startAuth } = useAuth();
 
   const getMessage = () => {
     startAuth().then((result) => {

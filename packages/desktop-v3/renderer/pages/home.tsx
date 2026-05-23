@@ -6,10 +6,19 @@ import Sidebar from '../components/sidebar'
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "../utils/trpc";
+import { useAuth } from '../contexts/AuthContext';
 
 export default function HomePage() {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+
+
+
+const { isAuthenticated, isAuthenticating, authState } = useAuth();
+
+console.log('Authentication status in _app:', { isAuthenticated, isAuthenticating, authState });
+
+
 
   const ping = () => {
     queryClient.fetchQuery(trpc.ping.queryOptions())

@@ -4,3 +4,4 @@ next-env.d.ts
 packages/docs/out
 packages/docs/.source
 dist/
+packages/pages/public

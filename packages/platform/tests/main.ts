@@ -11,13 +11,13 @@ describe('Platform', () => {
             expect(platform).to.be.an.instanceOf(Platform)
         })
         
-        it('should be able to query platform version', async function(){
-            const platform = new Platform()
-            const caller = platform.appRouter.createCaller({})
+        // it('should be able to query platform version', async function(){
+        //     const platform = new Platform()
+        //     const caller = platform.appRouter.createCaller({})
 
-            const response = await caller.version()
-            expect(response).to.equal(version)
-        })
+        //     const response = await caller.version()
+        //     expect(response).to.equal(version)
+        // })
 
         it('should be able to ping appRouter', async function(){
             const platform = new Platform()

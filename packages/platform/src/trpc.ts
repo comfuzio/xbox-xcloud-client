@@ -1,7 +1,7 @@
 import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
 
-import { version } from '../package.json';
+import pkg from '../package.json';
 
 import authController from './controller/auth.js';
 import profileController from './controller/profile.js';
@@ -20,6 +20,7 @@ import {
 const t = initTRPC.create();
 export const router = t.router;
 export const publicProcedure = t.procedure;
+export const createCallerFactory = t.createCallerFactory;
 
 const auth = new authController();
 const profile = new profileController();
@@ -57,7 +58,7 @@ const xCloudStreamConfig = z.object({
 
 export const appRouter = router({
     ping: publicProcedure.query(() => 'pong'),
-    version: publicProcedure.query(() => version),
+    version: publicProcedure.query(() => pkg.version),
     echo: publicProcedure.input(z.string()).query(({ input }) => `echo: ${input}`),
 
     auth_msal_start: publicProcedure.query(async () => await auth.startMsalAuth()),

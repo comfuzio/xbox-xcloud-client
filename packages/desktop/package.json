@@ -39,7 +39,7 @@
     "react-query": "^3.39.3",
     "typescript-eslint": "^8.59.4",
     "uplot": "^1.6.30",
-    "xal-node": "^1.1.5",
+    "xal-node": "^1.1.6-beta2",
     "xbox-webapi": "^2.0.0-beta4",
     "xbox-xcloud-player": "^0.2.11",
     "xvfb-maybe": "^0.2.1"

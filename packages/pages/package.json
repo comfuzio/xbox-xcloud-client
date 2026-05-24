@@ -1,0 +1,21 @@
+{
+	"name": "@greenlight/pages",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev",
+		"build": "cd ../desktop-v3 && yarn build:web && mkdir -p ../pages/public/ && cp -r web-out/* ../pages/public/",
+		"test": "vitest",
+		"cf-typegen": "wrangler types"
+	},
+	"devDependencies": {
+		"@greenlight/platform": "*",
+		"@cloudflare/vitest-pool-workers": "^0.12.4",
+		"@types/node": "^25.0.2",
+		"typescript": "^5.5.2",
+		"vitest": "~3.2.0",
+		"wrangler": "^4.92.0"
+	}
+}

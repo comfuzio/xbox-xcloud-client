@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import Head from 'next/head'
 
+import QRCode from "react-qr-code";
+
 // import { useQueryClient } from "@tanstack/react-query";
 import { RouterOutputs } from "../../utils/trpc";
 import { useAuth } from '../../contexts/AuthContext';
@@ -54,7 +56,20 @@ export default function HomePage() {
                     <h2 className="text-2xl font-bold text-white mb-1">You need to authenticate</h2>
                     <p className="text-white/40 text-sm">Login with your xbox account to continue</p>
 
-                    <p id="login-message">{ authFlow?.message || 'Retrieving login details...'}</p>
+                    <div className="flex mt-10">
+                      <div className="w-64 flex-auto">
+                        <p id="login-message">{ authFlow?.message || 'Retrieving login details...'}</p>
+                      </div>
+                      <div className="w-64 flex-auto">
+                        <p className="pb-4">
+                          Or scan the QR code below with your phone to sign in.
+                        </p>
+                        <div className="content-center justify-items-center">
+                          { (authFlow?.verification_uri && authFlow?.user_code) ? <QRCode value={`${authFlow.verification_uri}?otc=${authFlow.user_code}`} size={100} bgColor="#0d0d0d" fgColor="#ffffff" /> : ''}
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
               </div>

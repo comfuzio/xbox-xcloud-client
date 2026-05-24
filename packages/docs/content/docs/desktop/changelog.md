@@ -5,6 +5,10 @@ description: Changelogs
 
 ### Changelog
 
+## v2.4.2 - 2026-04-24
+- Fix frontend error message when token was expired #1581
+- Added German language (credits to @crt0mega) #1567
+
 ## v2.4.1 - 2025-12-11
 - Fix error on startup when user is unable to retrieve xCloud token #1506
 
